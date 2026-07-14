@@ -91,31 +91,6 @@ function Navigation() {
   )
 }
 
-function Footer() {
-  return (
-    <footer className="bg-[#050505] border-t border-[#111] py-8 md:py-10 mt-auto relative z-50 overflow-hidden">
-      <div className="absolute right-0 bottom-0 text-[80px] font-display font-bold text-white/5 leading-none pointer-events-none select-none -mb-4">
-        システム
-      </div>
-      <div className="max-w-[1600px] mx-auto px-4 md:px-8 flex flex-col md:flex-row justify-between items-end gap-6 relative z-10">
-        <div className="flex items-end gap-3">
-          <div className="w-12 h-12 bg-[#FFD600] flex items-center justify-center clip-button">
-            <img src={logo} alt="GAMERZNET" className="w-8 h-8 object-contain" />
-          </div>
-          <div className="flex flex-col -space-y-1">
-            <span className="text-3xl font-display font-bold text-white tracking-wider">GAMERZNET</span>
-            <span className="text-[10px] font-black text-neutral-500 uppercase tracking-widest">© {new Date().getFullYear()} ALL RIGHTS RESERVED</span>
-          </div>
-        </div>
-        
-        <Link to="/login" className="text-[10px] font-black text-[#FFD600] hover:text-white transition-colors tracking-widest uppercase bg-[#111] px-5 py-2 clip-button">
-          System Admin
-        </Link>
-      </div>
-    </footer>
-  )
-}
-
 export default function App() {
   return (
     <>
@@ -137,7 +112,6 @@ export default function App() {
             <Route path="/admin" element={<AdminSettings />} />
           </Routes>
         </main>
-        <Footer />
       </div>
     </>
   )

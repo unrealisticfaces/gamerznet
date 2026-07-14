@@ -107,53 +107,53 @@ export default function Products() {
       
       {previewGame && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#050505]/95 backdrop-blur-sm">
-          <div className="bg-[#111] border-l-2 border-[#FFD600] w-full max-w-2xl max-h-[80vh] flex flex-col md:flex-row overflow-hidden shadow-[0_0_30px_rgba(255,214,0,0.15)] relative clip-card">
+          <div className="bg-[#111] border-l-4 border-[#FFD600] w-full max-w-4xl max-h-[85vh] flex flex-col md:flex-row overflow-hidden shadow-[0_0_50px_rgba(255,214,0,0.15)] relative clip-card">
             
-            <button onClick={() => setPreviewGame(null)} className="absolute top-3 right-3 z-50 bg-[#FFD600] text-black w-8 h-8 flex items-center justify-center hover:bg-white transition-colors clip-button shadow-md cursor-pointer">
-              <X size={16} strokeWidth={3} />
+            <button onClick={() => setPreviewGame(null)} className="absolute top-4 right-4 z-50 bg-[#FFD600] text-black w-8 h-8 flex items-center justify-center hover:bg-white transition-colors clip-button shadow-md cursor-pointer">
+              <X size={18} strokeWidth={3} />
             </button>
             
-            <div className="w-full md:w-1/3 h-40 md:h-auto relative bg-[#050505] shrink-0 border-b md:border-b-0 md:border-r border-[#222]">
+            <div className="w-full md:w-[40%] h-48 md:h-auto relative bg-[#050505] shrink-0 border-b md:border-b-0 md:border-r border-[#222]">
               {previewGame.image ? (
                 <img src={previewGame.image} alt={previewGame.title} className="w-full h-full object-cover transition-all duration-700" />
               ) : (
-                <div className="w-full h-full flex items-center justify-center"><ImageIcon size={32} className="text-[#222]" /></div>
+                <div className="w-full h-full flex items-center justify-center"><ImageIcon size={48} className="text-[#222]" /></div>
               )}
               <div className="absolute inset-0 bg-gradient-to-t from-[#111] to-transparent md:bg-gradient-to-r md:from-transparent md:to-[#111]"></div>
             </div>
             
-            <div className="p-5 md:p-6 flex flex-col flex-grow overflow-y-auto" style={{ scrollbarWidth: 'thin', scrollbarColor: '#FFD600 transparent' }}>
-              <div className="flex items-center gap-3 mb-2">
-                <span className="bg-[#FFD600] text-black px-2 py-1 text-[10px] font-black uppercase tracking-widest clip-button">
+            <div className="p-6 md:p-8 flex flex-col w-full md:w-[60%] overflow-y-auto" style={{ scrollbarWidth: 'thin', scrollbarColor: '#FFD600 transparent' }}>
+              <div className="flex items-center gap-3 mb-3">
+                <span className="bg-[#FFD600] text-black px-3 py-1 text-[10px] font-black uppercase tracking-widest clip-button">
                   {previewGame.category}
                 </span>
-                <span className="text-sm font-sans font-bold text-white tracking-widest">{previewGame.size} GB</span>
+                <span className="text-base font-sans font-bold text-white tracking-widest">{previewGame.size} GB</span>
               </div>
               
-              <h2 className="text-2xl font-display font-bold text-white uppercase leading-tight mb-4">{previewGame.title}</h2>
+              <h2 className="text-3xl md:text-4xl font-display font-bold text-white uppercase leading-tight mb-5">{previewGame.title}</h2>
               
               <div className="space-y-4">
                 <div className="border-l-2 border-[#FFD600] pl-3 bg-[#0a0a0a] p-3 clip-card">
                   <h3 className="text-xs font-black text-white uppercase tracking-widest mb-1.5 flex items-center gap-2">Mission Intel</h3>
-                  <p className="text-xs text-neutral-300 font-sans leading-relaxed whitespace-pre-wrap">{previewGame.description || 'Intel secured. Awaiting decryption.'}</p>
+                  <p className="text-sm text-neutral-300 font-sans leading-relaxed whitespace-pre-wrap">{previewGame.description || 'Intel secured. Awaiting decryption.'}</p>
                 </div>
                 
                 <div className="border-l-2 border-[#333] pl-3 bg-[#0a0a0a] p-3 clip-card">
                   <h3 className="text-xs font-black text-white uppercase tracking-widest mb-1.5 flex items-center gap-2">System Specs</h3>
-                  <p className="text-xs text-neutral-300 font-sans whitespace-pre-wrap leading-relaxed">{previewGame.minSpecs || 'System parameters not provided.'}</p>
+                  <p className="text-sm text-neutral-300 font-sans whitespace-pre-wrap leading-relaxed">{previewGame.minSpecs || 'System parameters not provided.'}</p>
                 </div>
               </div>
               
               <div className="mt-6 pt-5 border-t border-[#222] flex justify-end shrink-0">
                 <button
                   onClick={() => { toggleGameSelection(previewGame); setPreviewGame(null); }}
-                  className={`px-6 py-2.5 font-black text-xs uppercase tracking-widest flex items-center gap-2 transition-colors clip-button cursor-pointer ${
+                  className={`px-8 py-3 font-black text-xs uppercase tracking-widest flex items-center gap-2 transition-colors clip-button cursor-pointer ${
                     cartIds.has(previewGame.id)
                       ? 'bg-[#222] text-[#FFD600] hover:bg-[#333]'
                       : 'bg-[#FFD600] text-black hover:bg-white'
                   }`}
                 >
-                  {cartIds.has(previewGame.id) ? <Trash2 size={14} /> : <ShoppingCart size={14} />}
+                  {cartIds.has(previewGame.id) ? <Trash2 size={16} /> : <ShoppingCart size={16} />}
                   {cartIds.has(previewGame.id) ? 'Remove' : 'Add to List'}
                 </button>
               </div>
@@ -179,7 +179,7 @@ export default function Products() {
 
       <div className="flex flex-col xl:flex-row xl:items-end justify-between mb-8 pb-6 border-b border-[#111] gap-6">
         <div className="flex flex-col border-l-4 border-[#FFD600] pl-4">
-          <h2 className="text-4xl md:text-5xl font-display font-bold text-white uppercase leading-none">The Vault</h2>
+          <h2 className="text-3xl md:text-4xl font-display font-bold text-white uppercase leading-none">The Vault</h2>
           <p className="text-neutral-400 font-bold uppercase text-[10px] tracking-widest mt-2">Initialize your local payload</p>
         </div>
         
@@ -190,7 +190,7 @@ export default function Products() {
             placeholder="SEARCH FOR A GAME..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-[#1a1a1a] border border-[#333] py-3.5 pl-12 pr-4 text-xs font-black text-white focus:outline-none focus:border-[#FFD600] transition-all clip-button placeholder-neutral-500 hover:border-[#FFD600]/50"
+            className="w-full bg-[#1a1a1a] border border-[#333] py-3.5 pl-12 pr-4 text-xs font-black text-white focus:outline-none focus:border-[#FFD600] transition-all clip-button placeholder-neutral-500 hover:border-[#FFD600]/50 cursor-text"
           />
         </div>
       </div>
@@ -289,7 +289,7 @@ export default function Products() {
           No Assets Detected.
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-8 gap-3 md:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-4 md:gap-5">
           {filteredGames.map(game => {
             const isSelected = cartIds.has(game.id)
             return (
@@ -329,7 +329,7 @@ export default function Products() {
                 </div>
                 
                 <div className="p-3 flex flex-col flex-grow bg-[#111]">
-                  <h3 className={`text-xs md:text-sm font-sans font-bold mb-1.5 line-clamp-2 uppercase tracking-wide leading-snug ${isSelected ? 'text-[#FFD600]' : 'text-white group-hover:text-[#FFD600] transition-colors'}`}>
+                  <h3 style={{ fontFamily: "'Poppins', sans-serif" }} className={`text-sm md:text-[15px] font-medium mb-1.5 line-clamp-2 leading-snug ${isSelected ? 'text-[#FFD600]' : 'text-white group-hover:text-[#FFD600] transition-colors'}`}>
                     {game.title}
                   </h3>
                   <div className="mt-auto flex flex-col gap-2">

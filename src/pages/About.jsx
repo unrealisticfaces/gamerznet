@@ -1,106 +1,173 @@
-import { HardDrive, MonitorPlay, Zap, ArrowDown, PackageCheck, Gamepad2 } from 'lucide-react'
+import { Zap, ShieldCheck, Cpu, HardDrive, MonitorPlay, Crosshair, Database, Server } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
 
 export default function About() {
+  const [visibleElements, setVisibleElements] = useState([])
+  const refs = useRef([])
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const index = Number(entry.target.dataset.index)
+            setVisibleElements((prev) => [...new Set([...prev, index])])
+          }
+        })
+      },
+      { threshold: 0.2, rootMargin: '0px 0px -50px 0px' }
+    )
+
+    refs.current.forEach((ref) => {
+      if (ref) observer.observe(ref)
+    })
+
+    return () => observer.disconnect()
+  }, [])
+
   return (
     <div className="w-full flex flex-col flex-grow bg-[#050505]">
       
       <div className="w-full relative overflow-hidden bg-anime-stripes border-b-2 border-[#111]">
-        <div className="absolute right-[-5%] top-10 text-[150px] md:text-[200px] font-display font-bold text-white/[0.02] leading-none pointer-events-none select-none z-0">
-          情報
-        </div>
         <div className="absolute inset-0 bg-gradient-to-r from-[#050505] via-[#050505]/90 to-transparent z-10"></div>
         <div className="absolute top-[20%] left-[10%] w-[30vw] h-[30vw] rounded-full bg-[#FFD600]/10 blur-[120px] animate-pulse z-0"></div>
         
-        <div className="max-w-[1600px] mx-auto px-4 md:px-8 py-20 relative z-20 flex flex-col items-center text-center">
-          <div className="bg-[#FFD600] text-black px-4 py-1.5 flex items-center gap-2 mb-6 clip-button -skew-x-12">
-            <span className="skew-x-12 text-xs font-black uppercase tracking-widest">How It Works</span>
-          </div>
-          <h2 className="text-5xl md:text-7xl font-display font-bold text-white uppercase mb-6 leading-none">
-            NO INSTALLS. <span className="text-[#FFD600]">JUST PLAY.</span>
+        <div className="max-w-[1600px] mx-auto px-4 md:px-8 py-24 relative z-20 flex flex-col items-start text-left">
+          <h2 className="text-5xl md:text-7xl lg:text-8xl font-display font-bold text-white uppercase mb-6 leading-none">
+            ABOUT<span className="text-[#FFD600]"> US.</span>
           </h2>
-          <p className="text-sm font-medium text-neutral-400 max-w-2xl leading-relaxed">
-            We bypass the internet. We bypass the launchers. We provide fully portable, modified game binaries physically shipped to your location on high-speed hardware.
+          <p className="text-sm md:text-base font-medium text-neutral-400 max-w-2xl leading-relaxed border-l-4 border-[#FFD600] pl-5 py-2 bg-[#111]/50">
+            GAMERZNET is a specialized vendor dedicated to the preservation and performance of offline gaming. We build, configure, and ship physical game drives directly to your sector.
           </p>
         </div>
       </div>
 
-      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8 py-24 relative">
-        
-        {/* Animated Process Pipeline */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 relative z-10">
+      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8 py-24 relative z-10">
+        <div 
+          ref={el => refs.current[0] = el} 
+          data-index="0"
+          className={`flex flex-col lg:flex-row gap-16 transition-all duration-1000 transform ${visibleElements.includes(0) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}
+        >
+          <div className="w-full lg:w-1/3">
+            <div className="sticky top-32">
+              <h3 className="text-3xl md:text-4xl font-display font-bold text-white uppercase mb-4 tracking-wider">The Mission</h3>
+              <div className="w-16 h-1.5 bg-[#FFD600] mb-6 clip-button"></div>
+              <p className="text-sm text-neutral-400 font-medium leading-relaxed mb-6">
+                Modern gaming has become a logistics nightmare. Between massive 150GB downloads, mandatory background clients, and intrusive DRM systems that drain your system memory, simply launching a game has become a chore.
+              </p>
+              <p className="text-sm text-neutral-400 font-medium leading-relaxed">
+                We built GAMERZNET to strip all of that away.
+              </p>
+            </div>
+          </div>
           
-          {/* Step 1 */}
-          <div className="flex flex-col items-center text-center group cursor-default">
-            <div className="w-24 h-24 bg-[#111] border-2 border-[#222] flex items-center justify-center mb-8 relative group-hover:scale-110 group-hover:border-[#FFD600] transition-all duration-500 clip-button z-10">
-              <div className="absolute inset-0 bg-[#FFD600]/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <HardDrive size={40} className="text-neutral-500 group-hover:text-[#FFD600] transition-colors relative z-10" />
-              <div className="absolute -top-3 -right-3 w-8 h-8 bg-[#FFD600] text-black font-black flex items-center justify-center clip-button shadow-lg">1</div>
+          <div className="w-full lg:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-[#111] p-8 clip-card border-t-4 border-[#222] hover:border-[#FFD600] transition-colors group shadow-xl">
+              <HardDrive size={32} className="text-[#FFD600] mb-6" />
+              <h4 className="text-xl font-display font-bold text-white uppercase mb-3">Physical Assets</h4>
+              <p className="text-xs text-neutral-400 leading-relaxed font-medium">
+                We don't sell digital keys or downloads. We sell highly optimized, physical hardware. Whether you need a single portable game or a massive 8TB custom vault, we deliver the actual drive to your hands.
+              </p>
             </div>
-            <h3 className="text-2xl font-display font-bold text-white uppercase tracking-wider mb-4 group-hover:text-[#FFD600] transition-colors">Select Payload</h3>
-            <p className="text-xs text-neutral-400 font-medium leading-relaxed max-w-xs">
-              Open the Vault Configurator. Choose your physical hard drive size (500GB up to 8TB) and pick the exact games you want loaded onto it.
-            </p>
-          </div>
 
-          {/* Arrow / Line separator (Hidden on mobile) */}
-          <div className="hidden lg:flex items-center justify-center relative -ml-8 -mr-8 z-0">
-            <div className="w-full h-0.5 bg-gradient-to-r from-transparent via-[#FFD600]/30 to-transparent"></div>
-            <ArrowDown size={32} className="text-[#FFD600]/50 absolute -rotate-90 animate-pulse" />
-          </div>
-
-          {/* Step 2 */}
-          <div className="flex flex-col items-center text-center group cursor-default mt-8 lg:mt-0">
-            <div className="w-24 h-24 bg-[#111] border-2 border-[#222] flex items-center justify-center mb-8 relative group-hover:scale-110 group-hover:border-[#FFD600] transition-all duration-500 clip-button z-10">
-              <div className="absolute inset-0 bg-[#FFD600]/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <PackageCheck size={40} className="text-neutral-500 group-hover:text-[#FFD600] transition-colors relative z-10" />
-              <div className="absolute -top-3 -right-3 w-8 h-8 bg-[#FFD600] text-black font-black flex items-center justify-center clip-button shadow-lg">2</div>
+            <div className="bg-[#111] p-8 clip-card border-t-4 border-[#222] hover:border-[#FFD600] transition-colors group shadow-xl">
+              <Cpu size={32} className="text-[#FFD600] mb-6" />
+              <h4 className="text-xl font-display font-bold text-white uppercase mb-3">Pre-Configured</h4>
+              <p className="text-xs text-neutral-400 leading-relaxed font-medium">
+                Unlike traditional repacks that force your CPU to decompress files for hours, our drives arrive 100% pre-installed. The binaries are extracted, patched, and ready to execute the moment you plug it in.
+              </p>
             </div>
-            <h3 className="text-2xl font-display font-bold text-white uppercase tracking-wider mb-4 group-hover:text-[#FFD600] transition-colors">We Compile</h3>
-            <p className="text-xs text-neutral-400 font-medium leading-relaxed max-w-xs">
-              We do the heavy lifting. We extract, modify, and optimize the game binaries onto your drive, removing DRM and background bloatware.
-            </p>
-          </div>
 
-          {/* Arrow / Line separator (Hidden on mobile) */}
-          <div className="hidden lg:flex items-center justify-center relative -ml-8 -mr-8 z-0">
-            <div className="w-full h-0.5 bg-gradient-to-r from-transparent via-[#FFD600]/30 to-transparent"></div>
-            <ArrowDown size={32} className="text-[#FFD600]/50 absolute -rotate-90 animate-pulse delay-150" />
-          </div>
-
-          {/* Step 3 */}
-          <div className="flex flex-col items-center text-center group cursor-default mt-8 lg:mt-0">
-            <div className="w-24 h-24 bg-[#111] border-2 border-[#222] flex items-center justify-center mb-8 relative group-hover:scale-110 group-hover:border-[#FFD600] transition-all duration-500 clip-button z-10">
-              <div className="absolute inset-0 bg-[#FFD600]/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <Gamepad2 size={40} className="text-neutral-500 group-hover:text-[#FFD600] transition-colors relative z-10" />
-              <div className="absolute -top-3 -right-3 w-8 h-8 bg-[#FFD600] text-black font-black flex items-center justify-center clip-button shadow-lg">3</div>
+            <div className="bg-[#111] p-8 clip-card border-t-4 border-[#222] hover:border-[#FFD600] transition-colors group shadow-xl">
+              <ShieldCheck size={32} className="text-[#FFD600] mb-6" />
+              <h4 className="text-xl font-display font-bold text-white uppercase mb-3">Pure Offline</h4>
+              <p className="text-xs text-neutral-400 leading-relaxed font-medium">
+                Our assets are scrubbed of all third-party launchers. No Steam, no Epic, no online checks. This dedicates your entire processor and RAM directly to the game's rendering engine for maximum framerates.
+              </p>
             </div>
-            <h3 className="text-2xl font-display font-bold text-white uppercase tracking-wider mb-4 group-hover:text-[#FFD600] transition-colors">Direct Execution</h3>
-            <p className="text-xs text-neutral-400 font-medium leading-relaxed max-w-xs">
-              Receive your drive. Connect via USB or SATA. Double click the game and play instantly. Zero unpacking. Zero internet needed.
-            </p>
-          </div>
 
+            <div className="bg-[#111] p-8 clip-card border-t-4 border-[#222] hover:border-[#FFD600] transition-colors group shadow-xl">
+              <Database size={32} className="text-[#FFD600] mb-6" />
+              <h4 className="text-xl font-display font-bold text-white uppercase mb-3">Digital Preservation</h4>
+              <p className="text-xs text-neutral-400 leading-relaxed font-medium">
+                When you rely on servers, you don't own your games. A physical GAMERZNET drive ensures your library remains yours forever, completely immune to server shutdowns or digital delistings.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="w-full max-w-4xl mx-auto px-4 pb-32">
-        <div className="bg-[#111] p-10 md:p-14 text-center clip-card border-t-4 border-[#FFD600] shadow-2xl relative overflow-hidden">
-          <div className="absolute inset-0 bg-anime-stripes opacity-10"></div>
-          <div className="relative z-10">
-            <Zap size={48} className="text-[#FFD600] mx-auto mb-6" />
-            <h3 className="text-3xl md:text-4xl font-display font-bold text-white uppercase mb-4">Ready for deployment?</h3>
-            <p className="text-sm font-medium text-neutral-400 mb-10 max-w-xl mx-auto">
-              Skip the massive downloads. Build your custom offline vault today and experience pure hardware performance.
-            </p>
-            <Link to="/store" className="inline-flex items-center justify-center gap-3 px-10 py-5 bg-[#FFD600] text-black font-black text-sm uppercase tracking-widest hover:bg-white transition-colors clip-button hover:scale-105 transform-gpu duration-300 -skew-x-12">
-              <div className="skew-x-12 flex items-center gap-3">
-                <MonitorPlay size={20} /> Access Store
+      <div className="w-full bg-[#0a0a0a] border-y-2 border-[#111] py-24 relative overflow-hidden">
+        <div className="absolute left-[-5%] top-1/2 -translate-y-1/2 w-96 h-96 bg-[#FFD600]/5 rounded-full blur-[100px] pointer-events-none"></div>
+        <div className="absolute right-[-5%] top-1/2 -translate-y-1/2 w-96 h-96 bg-[#FFD600]/5 rounded-full blur-[100px] pointer-events-none"></div>
+        
+        <div className="max-w-[1600px] mx-auto px-4 md:px-8 relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-white uppercase tracking-wider">Operational Standards</h2>
+            <div className="w-16 h-1.5 bg-[#FFD600] mx-auto mt-6 clip-button"></div>
+          </div>
+
+          <div className="flex flex-col md:flex-row justify-center gap-8 md:gap-12">
+            <div 
+              ref={el => refs.current[1] = el} 
+              data-index="1"
+              className={`flex flex-col items-center text-center max-w-xs transition-all duration-1000 transform delay-100 ${visibleElements.includes(1) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}
+            >
+              <div className="w-20 h-20 bg-[#111] border-2 border-[#222] flex items-center justify-center mb-6 clip-button shadow-lg">
+                <Crosshair size={32} className="text-[#FFD600]" />
               </div>
-            </Link>
+              <h4 className="text-xl font-display font-bold text-white uppercase mb-2">Precision</h4>
+              <p className="text-xs text-neutral-500 font-medium">Every title is rigorously tested on diverse hardware configurations before deployment.</p>
+            </div>
+
+            <div 
+              ref={el => refs.current[2] = el} 
+              data-index="2"
+              className={`flex flex-col items-center text-center max-w-xs transition-all duration-1000 transform delay-200 ${visibleElements.includes(2) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}
+            >
+              <div className="w-20 h-20 bg-[#111] border-2 border-[#222] flex items-center justify-center mb-6 clip-button shadow-lg">
+                <Server size={32} className="text-[#FFD600]" />
+              </div>
+              <h4 className="text-xl font-display font-bold text-white uppercase mb-2">Capacity</h4>
+              <p className="text-xs text-neutral-500 font-medium">From custom 500GB SSDs to massive 8TB HDD Vaults, we scale our hardware to your exact needs.</p>
+            </div>
+
+            <div 
+              ref={el => refs.current[3] = el} 
+              data-index="3"
+              className={`flex flex-col items-center text-center max-w-xs transition-all duration-1000 transform delay-300 ${visibleElements.includes(3) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}
+            >
+              <div className="w-20 h-20 bg-[#111] border-2 border-[#222] flex items-center justify-center mb-6 clip-button shadow-lg">
+                <Zap size={32} className="text-[#FFD600]" />
+              </div>
+              <h4 className="text-xl font-display font-bold text-white uppercase mb-2">Velocity</h4>
+              <p className="text-xs text-neutral-500 font-medium">Skip the multi-day download queues. Plug the drive in and enter the game immediately.</p>
+            </div>
           </div>
         </div>
       </div>
+
+      <section className="w-full py-16 bg-[#050505]">
+        <div className="w-full max-w-4xl mx-auto px-4">
+          <div className="bg-[#111] p-8 text-center clip-card border-t-2 border-[#FFD600] shadow-[0_0_30px_rgba(255,214,0,0.1)] relative overflow-hidden">
+            <div className="absolute inset-0 bg-anime-stripes opacity-10"></div>
+            
+            <div className="relative z-10 flex flex-col items-center">
+              <Zap size={32} className="text-[#FFD600] mb-4" />
+              <h3 className="text-2xl md:text-3xl font-display font-bold text-white uppercase mb-3">Ready for deployment?</h3>
+              <p className="text-xs font-medium text-neutral-400 mb-6 max-w-md mx-auto leading-relaxed">
+                Take control of your library. Build your custom offline vault today.
+              </p>
+              <Link to="/store" className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-[#FFD600] text-black font-black text-xs uppercase tracking-widest hover:bg-white transition-all clip-button hover:scale-105 transform-gpu duration-300 -skew-x-12 cursor-pointer shadow-[0_0_15px_rgba(255,214,0,0.2)]">
+                <div className="skew-x-12 flex items-center gap-2">
+                  <MonitorPlay size={16} /> Access Store
+                </div>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
 
     </div>
   )

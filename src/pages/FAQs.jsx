@@ -41,7 +41,7 @@ export default function FAQs() {
             <span className="text-[10px] font-black uppercase tracking-widest">Documentation</span>
           </div>
           <h2 className="text-5xl md:text-6xl font-display font-bold text-white uppercase mb-6 leading-none">
-            DATA<br/>LOGS
+            SYSTEM<br/>FAQS
           </h2>
           <p className="text-xs font-medium text-neutral-400 leading-relaxed bg-[#111]/50 py-3 px-4 border-l-2 border-[#FFD600]">
             Query the database for established protocols, system parameters, and troubleshooting directives.
