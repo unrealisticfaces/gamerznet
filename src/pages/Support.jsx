@@ -1,5 +1,4 @@
-import { MapPin, MessageSquare, PlayCircle, Download, Wrench, Shield, Folder, MonitorPlay, ExternalLink, ArrowRight, Terminal } from 'lucide-react'
-import redToolPreview from '../images/redtool.png'
+import { MapPin, MessageSquare, PlayCircle, Wrench, Shield, Folder, MonitorPlay, ArrowRight } from 'lucide-react'
 
 const socials = [
   { name: "WHATSAPP", handle: "017-9797 287", link: "https://wa.me/60179797287" },
@@ -20,7 +19,7 @@ export default function Support() {
             <span className="text-[10px] font-black text-[#FFD600] uppercase tracking-widest">Connection_Live</span>
           </div>
           <h2 className="text-5xl md:text-6xl font-display font-bold text-white uppercase leading-none">
-            COMMS ARRAY
+            SUPPORT DESK
           </h2>
         </div>
         <div className="px-4 py-2 border border-[#222] bg-[#111] clip-button">
@@ -58,17 +57,17 @@ export default function Support() {
         {/* Map */}
         <div className="lg:col-span-3 bg-[#111] relative min-h-[400px] lg:min-h-full">
           <iframe
-            src="https://www.openstreetmap.org/export/embed.html?bbox=101.74%2C2.95%2C101.84%2C3.03&layer=mapnik&marker=2.9935%2C101.7892"
-            className="absolute inset-0 w-full h-full border-0 filter grayscale opacity-40 contrast-150"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15938.483647413628!2d101.77708575!3d2.9926639!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31cdcb85f2b876d7%3A0xc3afbf3e3c04f982!2sKajang%2C%20Selangor%2C%20Malaysia!5e0!3m2!1sen!2sus!4v1700000000000!5m2!1sen!2sus"
+            className="absolute inset-0 w-full h-full border-0"
             allowFullScreen=""
             loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
             title="HQ Location Map"
           ></iframe>
-          <div className="absolute inset-0 bg-[#050505] mix-blend-color pointer-events-none"></div>
           
           <div className="absolute bottom-6 right-6 bg-[#FFD600] text-black px-4 py-2 flex items-center gap-2 clip-button shadow-[0_0_20px_rgba(255,214,0,0.2)]">
             <MapPin size={14} />
-            <span className="text-xs font-black uppercase tracking-widest">Target Acquired</span>
+            <span className="text-xs font-black uppercase tracking-widest">Location Acquired</span>
           </div>
         </div>
       </div>
@@ -77,10 +76,10 @@ export default function Support() {
       <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8 py-16">
         <div className="flex items-center gap-3 mb-10 border-b border-[#111] pb-4">
           <Wrench size={24} className="text-[#FFD600]" />
-          <h2 className="text-3xl font-display font-bold text-white uppercase tracking-wider">System Utilities</h2>
+          <h2 className="text-3xl font-display font-bold text-white uppercase tracking-wider">Tutorial Directives</h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
           {/* Phase 1 */}
           <div className="bg-[#111] p-5 flex flex-col group hover:bg-[#151515] transition-colors clip-card border-b-2 border-transparent hover:border-[#FFD600]">
@@ -128,40 +127,6 @@ export default function Support() {
             </a>
             <h4 className="text-base font-display font-bold text-white uppercase tracking-wider mb-1">Mount & Execute</h4>
             <p className="text-[10px] font-medium text-neutral-400 leading-relaxed">Finalize drive mounting procedures and execute optimized local binaries.</p>
-          </div>
-
-          {/* Tool Download */}
-          <div className="bg-[#FFD600] p-5 flex flex-col group shadow-[0_0_20px_rgba(255,214,0,0.15)] clip-card">
-            <div className="flex items-center justify-between mb-4 border-b border-black/20 pb-3">
-              <Terminal size={16} className="text-black" />
-              <span className="text-[10px] font-black text-black uppercase tracking-widest">GAMERZNET_TOOL.EXE</span>
-            </div>
-
-            <div className="relative w-full aspect-video bg-black border border-black mb-4 overflow-hidden clip-button">
-              <img src={redToolPreview} alt="GAMERZNET Tool" className="absolute inset-0 w-full h-full object-cover opacity-80 mix-blend-luminosity" />
-              <div className="absolute bottom-2 left-2 flex gap-1.5">
-                <span className="px-2 py-0.5 bg-[#FFD600] text-[8px] font-black text-black uppercase tracking-widest clip-button">DX11/12</span>
-                <span className="px-2 py-0.5 bg-white text-[8px] font-black text-black uppercase tracking-widest clip-button">VC++</span>
-              </div>
-            </div>
-            
-            <div className="flex flex-col flex-grow">
-              <h4 className="text-base font-display font-bold text-black uppercase tracking-wider mb-1">Runtime Injector</h4>
-              <p className="text-[10px] font-black text-black/70 leading-relaxed mb-4">Automated C# executable to detect and patch missing OS redistributables.</p>
-              
-              <a href="https://www.mediafire.com/file/lw48ndaseurhxnz/REDTOOL.rar/file" target="_blank" rel="noopener noreferrer" className="w-full mt-auto py-3 bg-black text-[#FFD600] text-center font-black text-[10px] uppercase tracking-widest hover:bg-[#222] transition-colors flex items-center justify-center gap-2 clip-button">
-                <Download size={14} /> DOWNLOAD_TOOL
-              </a>
-
-              <div className="mt-4 pt-3 border-t border-black/20 flex flex-col gap-2">
-                <a href="https://www.microsoft.com/en-us/download/details.aspx?id=35" target="_blank" rel="noopener noreferrer" className="text-[10px] font-black text-black/70 hover:text-black flex items-center gap-1.5 transition-colors uppercase tracking-widest">
-                  <ExternalLink size={12} /> DX_WEB_MANUAL
-                </a>
-                <a href="https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist" target="_blank" rel="noopener noreferrer" className="text-[10px] font-black text-black/70 hover:text-black flex items-center gap-1.5 transition-colors uppercase tracking-widest">
-                  <ExternalLink size={12} /> VC_REDIST_MANUAL
-                </a>
-              </div>
-            </div>
           </div>
 
         </div>

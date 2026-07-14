@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Plus, Minus } from 'lucide-react'
+import { Plus, Minus, TerminalSquare } from 'lucide-react'
 
 const faqs = [
   {
@@ -33,59 +33,68 @@ export default function FAQs() {
   const [openIndex, setOpenIndex] = useState(0)
 
   return (
-    <div className="w-full max-w-[1600px] mx-auto flex flex-col lg:flex-row flex-grow px-4 md:px-8 py-16 gap-12 lg:gap-24">
+    <div className="w-full flex flex-col flex-grow bg-[#050505]">
       
-      <div className="w-full lg:w-1/3 shrink-0">
-        <div className="sticky top-28 flex flex-col items-start text-left">
-          <div className="bg-[#FFD600] text-black px-3 py-1 flex items-center gap-2 mb-5">
-            <span className="text-[10px] font-black uppercase tracking-widest">Documentation</span>
+      <div className="w-full relative overflow-hidden bg-anime-stripes border-b border-[#111] py-20">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#050505] via-[#050505]/90 to-transparent z-10"></div>
+        <div className="absolute top-[20%] left-[10%] w-[30vw] h-[30vw] rounded-full bg-[#FFD600]/10 blur-[120px] pointer-events-none z-0"></div>
+        
+        <div className="max-w-[1000px] mx-auto px-4 md:px-8 relative z-20 flex flex-col items-center text-center">
+           <div className="bg-[#FFD600] text-black px-3 py-1 flex items-center gap-2 mb-5 clip-button -skew-x-12">
+            <span className="skew-x-12 text-[10px] font-black uppercase tracking-widest">Documentation</span>
           </div>
-          <h2 className="text-5xl md:text-6xl font-display font-bold text-white uppercase mb-6 leading-none">
-            SYSTEM<br/>FAQS
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-white uppercase mb-4 leading-none">
+            SYSTEM <span className="text-[#FFD600]">FAQS</span>
           </h2>
-          <p className="text-xs font-medium text-neutral-400 leading-relaxed bg-[#111]/50 py-3 px-4 border-l-2 border-[#FFD600]">
+          <p className="text-xs md:text-sm font-medium text-neutral-400 max-w-xl leading-relaxed border-l-2 border-[#FFD600] pl-4 py-1">
             Query the database for established protocols, system parameters, and troubleshooting directives.
           </p>
         </div>
       </div>
 
-      <div className="w-full lg:w-2/3 flex flex-col gap-4">
-        {faqs.map((faq, index) => {
-          const isOpen = index === openIndex
-          return (
-            <div 
-              key={index} 
-              className={`border transition-all duration-300 clip-card ${
-                isOpen ? 'bg-[#111] border-[#FFD600]' : 'bg-[#050505] border-[#222] hover:border-[#FFD600]/50'
-              }`}
-            >
-              <button
-                onClick={() => setOpenIndex(isOpen ? -1 : index)}
-                className="w-full flex items-center p-5 md:p-6 text-left focus:outline-none"
+      <div className="w-full max-w-[1000px] mx-auto px-4 md:px-8 py-16 relative z-10">
+        <div className="flex flex-col gap-4">
+          {faqs.map((faq, index) => {
+            const isOpen = index === openIndex
+            return (
+              <div 
+                key={index} 
+                className={`border transition-colors duration-150 clip-card relative overflow-hidden group ${
+                  isOpen ? 'bg-[#111] border-[#FFD600] shadow-[0_0_20px_rgba(255,214,0,0.05)]' : 'bg-[#0a0a0a] border-[#222] hover:border-[#FFD600]/50 hover:bg-[#111]'
+                }`}
               >
-                <span className={`text-xl font-display font-bold mr-4 transition-colors ${isOpen ? 'text-[#FFD600]' : 'text-neutral-600'}`}>
-                  {faq.id}.
-                </span>
-                <span className={`text-base font-black uppercase tracking-tight flex-grow transition-colors ${isOpen ? 'text-white' : 'text-neutral-400'}`}>
-                  {faq.question}
-                </span>
-                <div className={`w-8 h-8 flex items-center justify-center shrink-0 border transition-colors ${isOpen ? 'border-[#FFD600] text-[#FFD600] bg-[#FFD600]/10' : 'border-[#333] text-neutral-500'}`}>
-                  {isOpen ? <Minus size={16} /> : <Plus size={16} />}
-                </div>
-              </button>
-              
-              <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
-                <div className="px-5 md:px-6 pb-6 pt-0 ml-8 border-t border-[#222] mt-2">
-                  <p className="text-xs font-medium text-neutral-400 leading-relaxed pt-4">
-                    <span className="text-[#FFD600] font-black mr-2">SYSTEM:</span>{faq.answer}
-                  </p>
+                <div className={`absolute left-0 top-0 bottom-0 w-1 transition-colors duration-150 ${isOpen ? 'bg-[#FFD600]' : 'bg-transparent group-hover:bg-[#FFD600]/30'}`}></div>
+
+                <button
+                  onClick={() => setOpenIndex(isOpen ? -1 : index)}
+                  className="w-full flex items-center p-5 md:p-6 text-left focus:outline-none cursor-pointer"
+                >
+                  <span className={`text-xl md:text-2xl font-display font-bold mr-4 transition-colors duration-150 ${isOpen ? 'text-[#FFD600]' : 'text-neutral-600 group-hover:text-neutral-400'}`}>
+                    {faq.id}.
+                  </span>
+                  <span className={`text-sm md:text-base font-black uppercase tracking-wide flex-grow transition-colors duration-150 ${isOpen ? 'text-white' : 'text-neutral-400 group-hover:text-neutral-200'}`}>
+                    {faq.question}
+                  </span>
+                  <div className={`w-8 h-8 md:w-10 md:h-10 flex items-center justify-center shrink-0 border transition-colors duration-150 clip-button ${isOpen ? 'border-[#FFD600] text-black bg-[#FFD600]' : 'border-[#333] text-neutral-500 group-hover:border-[#FFD600] group-hover:text-[#FFD600]'}`}>
+                    {isOpen ? <Minus size={18} /> : <Plus size={18} />}
+                  </div>
+                </button>
+                
+                <div className={`overflow-hidden transition-[max-height,opacity] duration-200 ease-out ${isOpen ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0'}`}>
+                  <div className="px-5 md:px-6 pb-6 pt-0 ml-4 md:ml-12 border-t border-[#222] mt-2">
+                    <div className="flex items-start gap-3 mt-5">
+                      <TerminalSquare size={16} className="text-[#FFD600] shrink-0 mt-0.5" />
+                      <p className="text-xs md:text-sm font-medium text-neutral-300 leading-relaxed font-sans">
+                        {faq.answer}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          )
-        })}
+            )
+          })}
+        </div>
       </div>
-
     </div>
   )
 }

@@ -31,9 +31,6 @@ export default function Login() {
       
       <div className="w-full md:w-1/2 p-8 lg:p-16 flex flex-col justify-center relative overflow-hidden border-b md:border-b-0 md:border-r border-[#111]">
         <div className="absolute inset-0 bg-anime-stripes opacity-50 z-0"></div>
-        <div className="absolute right-[5%] top-1/4 text-[150px] font-display font-bold text-white/[0.02] leading-none pointer-events-none select-none z-0">
-          管理者
-        </div>
         <div className="relative z-10 flex flex-col items-start">
           <div className="bg-[#FFD600] text-black px-3 py-1 flex items-center gap-2 mb-6">
             <span className="text-[10px] font-black uppercase tracking-widest">System Admin</span>
