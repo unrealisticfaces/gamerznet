@@ -35,13 +35,13 @@ function Navigation() {
   return (
     <nav className="fixed w-full z-[100] bg-[#050505]/90 backdrop-blur-xl border-b border-[#111]">
       <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8">
-        <div className="flex items-center justify-between h-20 md:h-24">
+        <div className="flex items-center justify-between h-24 md:h-28">
           
           <Link to="/" className="flex items-center gap-4 group" onClick={() => setIsOpen(false)}>
-            <div className="w-12 h-12 flex items-center justify-center transform-gpu group-hover:scale-105 transition-transform">
-              <img src={logo} alt="GAMERZNET" className="w-10 h-10 object-contain" />
+            <div className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center transform-gpu group-hover:scale-105 transition-transform">
+              <img src={logo} alt="GAMERZNET" className="w-full h-full object-contain drop-shadow-[0_0_15px_rgba(255,214,0,0.15)]" />
             </div>
-            <span className="text-3xl font-display font-bold text-white tracking-wider uppercase">GAMERZNET</span>
+            <span className="text-3xl md:text-4xl font-display font-bold text-white tracking-wider uppercase hidden sm:block">GAMERZNET</span>
           </Link>
 
           <div className="hidden md:flex items-center gap-2">
@@ -101,7 +101,7 @@ export default function App() {
 
       <div className="min-h-screen text-white flex flex-col selection:bg-[#FFD600] selection:text-black relative z-10">
         <Navigation />
-        <main className="flex-grow pt-20 md:pt-24 flex flex-col">
+        <main className="flex-grow pt-24 md:pt-28 flex flex-col">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/store" element={<Products />} />

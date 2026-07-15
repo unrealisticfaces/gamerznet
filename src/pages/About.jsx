@@ -1,6 +1,7 @@
 import { Zap, ShieldCheck, Cpu, HardDrive, MonitorPlay, Crosshair, Database, Server } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
+import logo from '../images/gamerznet.webp'
 
 export default function About() {
   const [visibleElements, setVisibleElements] = useState([])
@@ -31,15 +32,20 @@ export default function About() {
       
       <div className="w-full relative overflow-hidden bg-anime-stripes border-b-2 border-[#111]">
         <div className="absolute inset-0 bg-gradient-to-r from-[#050505] via-[#050505]/90 to-transparent z-10"></div>
-        <div className="absolute top-[20%] left-[10%] w-[30vw] h-[30vw] rounded-full bg-[#FFD600]/10 blur-[120px] animate-pulse z-0"></div>
+        <div className="absolute top-[20%] right-[10%] w-[40vw] h-[40vw] rounded-full bg-[#FFD600]/10 blur-[120px] animate-pulse z-0"></div>
         
-        <div className="max-w-[1600px] mx-auto px-4 md:px-8 py-24 relative z-20 flex flex-col items-start text-left">
-          <h2 className="text-5xl md:text-7xl lg:text-8xl font-display font-bold text-white uppercase mb-6 leading-none">
-            ABOUT<span className="text-[#FFD600]"> US.</span>
-          </h2>
-          <p className="text-sm md:text-base font-medium text-neutral-400 max-w-2xl leading-relaxed border-l-4 border-[#FFD600] pl-5 py-2 bg-[#111]/50">
-            GAMERZNET is a specialized vendor dedicated to the preservation and performance of offline gaming. We build, configure, and ship physical game drives directly to your sector.
-          </p>
+        <div className="max-w-[1600px] mx-auto px-4 md:px-8 py-24 relative z-20 flex flex-col lg:flex-row items-center justify-between gap-12 text-left">
+          <div className="flex flex-col items-start w-full lg:w-1/2">
+            <h2 className="text-5xl md:text-7xl lg:text-8xl font-display font-bold text-white uppercase mb-6 leading-none">
+              ABOUT<span className="text-[#FFD600]"> US.</span>
+            </h2>
+            <p className="text-sm md:text-base font-medium text-neutral-400 max-w-2xl leading-relaxed border-l-4 border-[#FFD600] pl-5 py-2 bg-[#111]/50">
+              GAMERZNET is a specialized vendor dedicated to the preservation and performance of offline gaming. We build, configure, and ship physical game drives directly to your sector.
+            </p>
+          </div>
+          <div className="w-full lg:w-1/2 flex justify-center lg:justify-end">
+            <img src={logo} alt="GAMERZNET" className="w-48 h-48 md:w-64 md:h-64 lg:w-80 lg:h-80 object-contain drop-shadow-[0_0_50px_rgba(255,214,0,0.15)] transform hover:scale-105 transition-transform duration-700" />
+          </div>
         </div>
       </div>
 

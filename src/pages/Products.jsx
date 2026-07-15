@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { Image as ImageIcon, Search, MonitorPlay, HardDrive, ShoppingCart, Trash2, CheckCircle2, AlertTriangle, ChevronDown, X, Info, Shield, Save, PlayCircle } from 'lucide-react'
+import { Image as ImageIcon, Search, MonitorPlay, HardDrive, ShoppingCart, Trash2, CheckCircle2, AlertTriangle, ChevronDown, X, Info, Shield, Save, PlayCircle, Send, Download } from 'lucide-react'
 import { ref, get, child } from 'firebase/database'
 import { db } from '../firebase'
 
@@ -11,8 +11,11 @@ export default function Products() {
   const [driveCapacity, setDriveCapacity] = useState(500)
   const [cart, setCart] = useState([])
   const [showToast, setShowToast] = useState(false)
+  const [showSpaceWarning, setShowSpaceWarning] = useState(false)
+  const [downloadToast, setDownloadToast] = useState(false)
   const [previewGame, setPreviewGame] = useState(null)
   const [activeMedia, setActiveMedia] = useState({ type: 'image', url: '' })
+  const [showCheckoutModal, setShowCheckoutModal] = useState(false)
 
   const categories = ['All', 'PC', 'PS4', 'Multiplayer', 'Kids']
 
@@ -71,12 +74,24 @@ export default function Products() {
     if (cartIds.has(game.id)) {
       setCart(prev => prev.filter(g => g.id !== game.id))
     } else {
-      setCart(prev => [...prev, game])
+      setCart(prev => {
+        const newCart = [...prev, game]
+        const newUsed = newCart.reduce((total, g) => total + (Number(g.size) || 0), 0)
+        const newRemain = driveCapacity - newUsed
+        
+        // Trigger space buffer notification when remaining space is between 0 and 60GB
+        if (newRemain <= 60 && newRemain >= 0) {
+          setShowSpaceWarning(true)
+          setTimeout(() => setShowSpaceWarning(false), 5000)
+        }
+        
+        return newCart
+      })
     }
   }
 
-  const exportToNotepad = () => {
-    if (cart.length === 0) return
+  const orderText = useMemo(() => {
+    if (cart.length === 0) return ""
     let text = "=========================================\n"
     text += "       GAMERZNET - DEPLOYMENT ORDER\n"
     text += "=========================================\n\n"
@@ -92,15 +107,21 @@ export default function Products() {
       text += `   Size: ${game.size} GB\n\n`
     })
     text += "=========================================\n"
-    text += "Transmit this log to HQ via WhatsApp/FB.\n"
-    
-    const blob = new Blob([text], { type: "text/plain" })
+    return text
+  }, [cart, driveCapacity, totalUsedSpace, remainingSpace, isOverCapacity])
+
+  const downloadOrderLog = () => {
+    if (!orderText) return
+    const blob = new Blob([orderText], { type: "text/plain" })
     const url = URL.createObjectURL(blob)
     const link = document.createElement("a")
     link.href = url
     link.download = "GAMERZNET_Payload.txt"
     link.click()
     URL.revokeObjectURL(url)
+    
+    setDownloadToast(true)
+    setTimeout(() => setDownloadToast(false), 4000)
   }
 
   const handleOpenModal = (game) => {
@@ -138,6 +159,57 @@ export default function Products() {
   return (
     <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8 relative pb-24 pt-6">
       
+      {/* Checkout Modal */}
+      {showCheckoutModal && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-[#050505]/95 backdrop-blur-sm">
+          <div className="bg-[#111] border-l-4 border-[#FFD600] w-full max-w-2xl flex flex-col shadow-[0_0_50px_rgba(255,214,0,0.15)] relative clip-card p-6 md:p-10">
+            
+            <button onClick={() => setShowCheckoutModal(false)} className="absolute top-4 right-4 z-50 bg-[#FFD600] text-black w-8 h-8 flex items-center justify-center hover:bg-white transition-colors clip-button cursor-pointer">
+              <X size={18} strokeWidth={3} />
+            </button>
+            
+            <div className="flex items-center gap-3 mb-4 border-b border-[#222] pb-4">
+              <Shield size={24} className="text-[#FFD600]" />
+              <h2 className="text-2xl md:text-3xl font-display font-bold text-white uppercase tracking-wider">Finalize Deployment</h2>
+            </div>
+            
+            <p className="text-xs md:text-sm text-neutral-400 font-sans mb-6 leading-relaxed border-l-2 border-[#FFD600] pl-3">
+              To execute this deployment, please download your payload log below and forward the <strong>.txt file</strong> directly to our Headquarters via our official Facebook page.
+            </p>
+
+            <div className="bg-[#050505] border border-[#222] p-4 mb-6 h-48 overflow-y-auto font-mono text-[10px] md:text-xs text-neutral-300 whitespace-pre-wrap clip-card" style={{ scrollbarWidth: 'thin', scrollbarColor: '#FFD600 transparent' }}>
+              {orderText}
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <button 
+                onClick={downloadOrderLog}
+                className="w-full py-4 bg-[#222] text-white hover:bg-[#333] transition-colors font-black text-[10px] md:text-xs uppercase tracking-widest clip-button border border-[#333] flex items-center justify-center gap-2"
+              >
+                <Download size={16} /> 1. Download Payload (.txt)
+              </button>
+              
+              <a 
+                href="https://www.facebook.com/gamerznetonline"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-4 bg-[#FFD600] text-black hover:bg-white transition-colors font-black text-[10px] md:text-xs uppercase tracking-widest clip-button text-center flex items-center justify-center gap-2"
+              >
+                <Send size={16} /> 2. Send to Facebook
+              </a>
+            </div>
+            
+            <div className="mt-6 text-center">
+              <a href="https://www.facebook.com/gamerznetonline" target="_blank" rel="noopener noreferrer" className="text-[10px] text-neutral-500 hover:text-[#FFD600] transition-colors uppercase tracking-widest">
+                https://www.facebook.com/gamerznetonline
+              </a>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* Game Preview Modal */}
       {previewGame && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#050505]/95 backdrop-blur-sm">
           <div className="bg-[#111] border-l-4 border-[#FFD600] w-full max-w-4xl h-[90vh] md:h-[600px] flex flex-col md:flex-row overflow-hidden shadow-[0_0_50px_rgba(255,214,0,0.15)] relative clip-card">
@@ -225,14 +297,45 @@ export default function Products() {
         </div>
       )}
 
-      <div className={`fixed top-24 right-4 md:right-8 z-[90] transition-all duration-500 ${showToast ? 'translate-x-0 opacity-100' : 'translate-x-[150%] opacity-0'}`}>
+      {/* Toasts / Notifications */}
+      <div className={`fixed top-24 right-4 md:right-8 z-[120] transition-all duration-500 ${downloadToast ? 'translate-x-0 opacity-100' : 'translate-x-[150%] opacity-0'}`}>
+        <div className="bg-[#111] border-l-2 border-[#FFD600] p-4 shadow-[0_0_30px_rgba(255,214,0,0.3)] flex items-start gap-4 w-80 clip-card">
+          <div className="w-8 h-8 bg-[#FFD600]/20 flex items-center justify-center shrink-0 clip-button">
+            <CheckCircle2 size={16} className="text-[#FFD600]" />
+          </div>
+          <div className="flex-grow">
+            <h4 className="text-sm font-black text-white uppercase mb-0.5">Payload Downloaded</h4>
+            <p className="text-[10px] font-medium text-neutral-400">Your log file has been downloaded. Ready for transmission.</p>
+          </div>
+          <button onClick={() => setDownloadToast(false)} className="text-neutral-500 hover:text-white cursor-pointer">
+            <X size={16} />
+          </button>
+        </div>
+      </div>
+
+      <div className={`fixed top-24 right-4 md:right-8 z-[120] transition-all duration-500 ${showSpaceWarning ? 'translate-x-0 opacity-100' : 'translate-x-[150%] opacity-0'}`}>
+        <div className="bg-[#111] border-l-2 border-[#FFD600] p-4 shadow-[0_0_30px_rgba(255,214,0,0.3)] flex items-start gap-4 w-80 clip-card">
+          <div className="w-8 h-8 bg-[#FFD600]/20 flex items-center justify-center shrink-0 clip-button">
+            <Info size={16} className="text-[#FFD600]" />
+          </div>
+          <div className="flex-grow">
+            <h4 className="text-sm font-black text-white uppercase mb-0.5">Buffer Recommendation</h4>
+            <p className="text-[10px] font-medium text-neutral-400">It is highly recommended to leave 50-60GB of free space for optimal drive performance.</p>
+          </div>
+          <button onClick={() => setShowSpaceWarning(false)} className="text-neutral-500 hover:text-white cursor-pointer">
+            <X size={16} />
+          </button>
+        </div>
+      </div>
+
+      <div className={`fixed top-24 right-4 md:right-8 z-[120] transition-all duration-500 ${showToast ? 'translate-x-0 opacity-100' : 'translate-x-[150%] opacity-0'}`}>
         <div className="bg-[#111] border-l-2 border-red-500 p-4 shadow-[0_0_30px_rgba(239,68,68,0.3)] flex items-start gap-4 w-80 clip-card">
           <div className="w-8 h-8 bg-red-500/20 flex items-center justify-center shrink-0 clip-button">
             <AlertTriangle size={16} className="text-red-500" />
           </div>
           <div className="flex-grow">
             <h4 className="text-sm font-black text-white uppercase mb-0.5">Capacity Overload</h4>
-            <p className="text-xs font-medium text-neutral-400">Assets exceed hardware limit. Reconfigure payload.</p>
+            <p className="text-[10px] font-medium text-neutral-400">Assets exceed hardware limit. Reconfigure payload.</p>
           </div>
           <button onClick={() => setShowToast(false)} className="text-neutral-500 hover:text-white cursor-pointer">
             <X size={16} />
@@ -317,11 +420,11 @@ export default function Products() {
               <Trash2 size={14} /> Clear
             </button>
             <button 
-              onClick={exportToNotepad}
+              onClick={() => setShowCheckoutModal(true)}
               className="w-full sm:w-auto px-8 py-4 bg-[#FFD600] text-black hover:bg-white transition-colors font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed clip-button cursor-pointer"
               disabled={cart.length === 0}
             >
-              <Save size={14} /> Extract Log
+              <Save size={14} /> Deploy Payload
             </button>
           </div>
         </div>
