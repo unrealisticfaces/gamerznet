@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { Image as ImageIcon, Search, MonitorPlay, HardDrive, ShoppingCart, Trash2, CheckCircle2, AlertTriangle, ChevronDown, X, Info, Shield, Save, PlayCircle, Send, Download } from 'lucide-react'
+import { Image as ImageIcon, Search, MonitorPlay, HardDrive, ShoppingCart, Trash2, CheckCircle2, AlertTriangle, ChevronDown, X, Info, Shield, Save, PlayCircle, Send, Download, FileText } from 'lucide-react'
 import { ref, get, child } from 'firebase/database'
 import { db } from '../firebase'
 
@@ -79,7 +79,6 @@ export default function Products() {
         const newUsed = newCart.reduce((total, g) => total + (Number(g.size) || 0), 0)
         const newRemain = driveCapacity - newUsed
         
-        // Trigger space buffer notification when remaining space is between 0 and 60GB
         if (newRemain <= 60 && newRemain >= 0) {
           setShowSpaceWarning(true)
           setTimeout(() => setShowSpaceWarning(false), 5000)
@@ -116,7 +115,7 @@ export default function Products() {
     const url = URL.createObjectURL(blob)
     const link = document.createElement("a")
     link.href = url
-    link.download = "GAMERZNET_Payload.txt"
+    link.download = "GAMERZNET_Order.txt"
     link.click()
     URL.revokeObjectURL(url)
     
@@ -159,57 +158,86 @@ export default function Products() {
   return (
     <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8 relative pb-24 pt-6">
       
-      {/* Checkout Modal */}
       {showCheckoutModal && (
         <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-[#050505]/95 backdrop-blur-sm">
-          <div className="bg-[#111] border-l-4 border-[#FFD600] w-full max-w-2xl flex flex-col shadow-[0_0_50px_rgba(255,214,0,0.15)] relative clip-card p-6 md:p-10">
+          <div className="bg-[#111] border-l-4 border-[#FFD600] w-full max-w-3xl flex flex-col shadow-[0_0_50px_rgba(255,214,0,0.15)] relative clip-card p-6 md:p-10 max-h-[95vh] overflow-y-auto" style={{ scrollbarWidth: 'thin', scrollbarColor: '#FFD600 transparent' }}>
             
             <button onClick={() => setShowCheckoutModal(false)} className="absolute top-4 right-4 z-50 bg-[#FFD600] text-black w-8 h-8 flex items-center justify-center hover:bg-white transition-colors clip-button cursor-pointer">
               <X size={18} strokeWidth={3} />
             </button>
             
-            <div className="flex items-center gap-3 mb-4 border-b border-[#222] pb-4">
+            <div className="flex items-center gap-3 mb-2">
               <Shield size={24} className="text-[#FFD600]" />
               <h2 className="text-2xl md:text-3xl font-display font-bold text-white uppercase tracking-wider">Finalize Deployment</h2>
             </div>
             
-            <p className="text-xs md:text-sm text-neutral-400 font-sans mb-6 leading-relaxed border-l-2 border-[#FFD600] pl-3">
-              To execute this deployment, please download your payload log below and forward the <strong>.txt file</strong> directly to our Headquarters via our official Facebook page.
+            <p className="text-xs md:text-sm text-neutral-400 font-sans mb-6 leading-relaxed">
+              Download your game list and forward the file to our HQ.
             </p>
 
-            <div className="bg-[#050505] border border-[#222] p-4 mb-6 h-48 overflow-y-auto font-mono text-[10px] md:text-xs text-neutral-300 whitespace-pre-wrap clip-card" style={{ scrollbarWidth: 'thin', scrollbarColor: '#FFD600 transparent' }}>
-              {orderText}
+            <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6 mb-8 py-8 bg-[#050505] border border-[#222] clip-card relative overflow-hidden">
+              <div className="absolute inset-0 bg-anime-stripes opacity-10"></div>
+              
+              <div className="flex flex-col items-center z-10 w-24">
+                <div className="w-12 h-12 bg-[#111] border-2 border-[#FFD600] flex items-center justify-center clip-button shadow-[0_0_15px_rgba(255,214,0,0.3)] animate-pulse">
+                  <Download size={20} className="text-[#FFD600]" />
+                </div>
+                <span className="text-[9px] font-black text-[#FFD600] uppercase tracking-widest mt-3 text-center">1. Download</span>
+              </div>
+
+              <div className="flex md:flex-row flex-col gap-2 z-10">
+                <div className="w-1.5 h-1.5 bg-[#FFD600] rounded-full animate-ping" style={{ animationDelay: '0ms' }}></div>
+                <div className="w-1.5 h-1.5 bg-[#FFD600] rounded-full animate-ping" style={{ animationDelay: '150ms' }}></div>
+                <div className="w-1.5 h-1.5 bg-[#FFD600] rounded-full animate-ping" style={{ animationDelay: '300ms' }}></div>
+              </div>
+
+              <div className="flex flex-col items-center z-10 w-24">
+                <div className="w-12 h-12 bg-[#111] border-2 border-[#333] flex items-center justify-center clip-button">
+                  <FileText size={20} className="text-white" />
+                </div>
+                <span className="text-[9px] font-black text-white uppercase tracking-widest mt-3 text-center">2. The .TXT File</span>
+              </div>
+
+              <div className="flex md:flex-row flex-col gap-2 z-10">
+                <div className="w-1.5 h-1.5 bg-[#FFD600] rounded-full animate-ping" style={{ animationDelay: '450ms' }}></div>
+                <div className="w-1.5 h-1.5 bg-[#FFD600] rounded-full animate-ping" style={{ animationDelay: '600ms' }}></div>
+                <div className="w-1.5 h-1.5 bg-[#FFD600] rounded-full animate-ping" style={{ animationDelay: '750ms' }}></div>
+              </div>
+
+              <div className="flex flex-col items-center z-10 w-24">
+                <div className="w-12 h-12 bg-[#FFD600] border-2 border-[#FFD600] flex items-center justify-center clip-button shadow-[0_0_20px_rgba(255,214,0,0.4)]">
+                  <Send size={20} className="text-black" />
+                </div>
+                <span className="text-[9px] font-black text-[#FFD600] uppercase tracking-widest mt-3 text-center">3. Send to FB</span>
+              </div>
             </div>
 
-            <div className="flex flex-col gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <button 
                 onClick={downloadOrderLog}
-                className="w-full py-4 bg-[#222] text-white hover:bg-[#333] transition-colors font-black text-[10px] md:text-xs uppercase tracking-widest clip-button border border-[#333] flex items-center justify-center gap-2"
+                className="w-full py-5 bg-[#222] text-white hover:bg-[#333] transition-colors font-black text-[10px] md:text-xs uppercase tracking-widest clip-button border border-[#333] flex items-center justify-center gap-2"
               >
-                <Download size={16} /> 1. Download Payload (.txt)
+                <Download size={16} className="text-[#FFD600]" /> Download Order (.txt)
               </button>
               
               <a 
                 href="https://www.facebook.com/gamerznetonline"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full py-4 bg-[#FFD600] text-black hover:bg-white transition-colors font-black text-[10px] md:text-xs uppercase tracking-widest clip-button text-center flex items-center justify-center gap-2"
+                className="w-full py-5 bg-[#FFD600] text-black hover:bg-white transition-colors font-black text-[10px] md:text-xs uppercase tracking-widest clip-button text-center flex items-center justify-center gap-2"
               >
-                <Send size={16} /> 2. Send to Facebook
+                <Send size={16} /> Open Facebook Page
               </a>
             </div>
             
             <div className="mt-6 text-center">
-              <a href="https://www.facebook.com/gamerznetonline" target="_blank" rel="noopener noreferrer" className="text-[10px] text-neutral-500 hover:text-[#FFD600] transition-colors uppercase tracking-widest">
-                https://www.facebook.com/gamerznetonline
-              </a>
+              <span className="text-[14px] text-neutral-500 font-medium">https://www.facebook.com/gamerznetisback</span>
             </div>
 
           </div>
         </div>
       )}
 
-      {/* Game Preview Modal */}
       {previewGame && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#050505]/95 backdrop-blur-sm">
           <div className="bg-[#111] border-l-4 border-[#FFD600] w-full max-w-4xl h-[90vh] md:h-[600px] flex flex-col md:flex-row overflow-hidden shadow-[0_0_50px_rgba(255,214,0,0.15)] relative clip-card">
@@ -297,14 +325,13 @@ export default function Products() {
         </div>
       )}
 
-      {/* Toasts / Notifications */}
       <div className={`fixed top-24 right-4 md:right-8 z-[120] transition-all duration-500 ${downloadToast ? 'translate-x-0 opacity-100' : 'translate-x-[150%] opacity-0'}`}>
         <div className="bg-[#111] border-l-2 border-[#FFD600] p-4 shadow-[0_0_30px_rgba(255,214,0,0.3)] flex items-start gap-4 w-80 clip-card">
           <div className="w-8 h-8 bg-[#FFD600]/20 flex items-center justify-center shrink-0 clip-button">
             <CheckCircle2 size={16} className="text-[#FFD600]" />
           </div>
           <div className="flex-grow">
-            <h4 className="text-sm font-black text-white uppercase mb-0.5">Payload Downloaded</h4>
+            <h4 className="text-sm font-black text-white uppercase mb-0.5">Order Downloaded</h4>
             <p className="text-[10px] font-medium text-neutral-400">Your log file has been downloaded. Ready for transmission.</p>
           </div>
           <button onClick={() => setDownloadToast(false)} className="text-neutral-500 hover:text-white cursor-pointer">
@@ -335,7 +362,7 @@ export default function Products() {
           </div>
           <div className="flex-grow">
             <h4 className="text-sm font-black text-white uppercase mb-0.5">Capacity Overload</h4>
-            <p className="text-[10px] font-medium text-neutral-400">Assets exceed hardware limit. Reconfigure payload.</p>
+            <p className="text-[10px] font-medium text-neutral-400">Assets exceed hardware limit. Remove some games.</p>
           </div>
           <button onClick={() => setShowToast(false)} className="text-neutral-500 hover:text-white cursor-pointer">
             <X size={16} />
@@ -346,7 +373,7 @@ export default function Products() {
       <div className="flex flex-col xl:flex-row xl:items-end justify-between mb-8 pb-6 border-b border-[#111] gap-6">
         <div className="flex flex-col border-l-4 border-[#FFD600] pl-4">
           <h2 className="text-3xl md:text-4xl font-display font-bold text-white uppercase leading-none">The Vault</h2>
-          <p className="text-neutral-400 font-bold uppercase text-[10px] tracking-widest mt-2">Initialize your local payload</p>
+          <p className="text-neutral-400 font-bold uppercase text-[10px] tracking-widest mt-2">Build your custom game drive</p>
         </div>
         
         <div className="relative w-full xl:w-[400px]">
@@ -424,7 +451,7 @@ export default function Products() {
               className="w-full sm:w-auto px-8 py-4 bg-[#FFD600] text-black hover:bg-white transition-colors font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed clip-button cursor-pointer"
               disabled={cart.length === 0}
             >
-              <Save size={14} /> Deploy Payload
+              <Save size={14} /> Complete Order
             </button>
           </div>
         </div>
