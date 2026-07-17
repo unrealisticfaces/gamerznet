@@ -221,7 +221,7 @@ export default function Products() {
               </button>
               
               <a 
-                href="https://www.facebook.com/gamerznetonline"
+                href="https://www.facebook.com/gamerznetisback"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full py-5 bg-[#FFD600] text-black hover:bg-white transition-colors font-black text-[10px] md:text-xs uppercase tracking-widest clip-button text-center flex items-center justify-center gap-2"
