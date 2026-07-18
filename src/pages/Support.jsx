@@ -3,6 +3,7 @@ import { MapPin, MessageSquare, PlayCircle, Wrench, Shield, Folder, MonitorPlay,
 const channels = [
   { name: "WHATSAPP", handle: "0952 467 9636", link: "https://wa.me/639524679636", icon: MessageCircle },
   { name: "FACEBOOK", handle: "GAMERZNET", link: "https://www.facebook.com/gamerznetisback", icon: MessageSquare },
+  { name: "YOUTUBE", handle: "@gamerznetisbackonline", link: "https://www.youtube.com/@gamerznetisbackonline", icon: MonitorPlay },
   { name: "EMAIL", handle: "gamerz.nets@gmail.com", link: "mailto:gamerz.nets@gmail.com", icon: Mail }
 ]
 
@@ -17,7 +18,7 @@ export default function Support() {
         <div className="max-w-[1600px] mx-auto px-4 md:px-8 relative z-20 flex flex-col items-center text-center">
           <div className="bg-[#FFD600] text-black px-3 py-1 flex items-center gap-2 mb-4 clip-button -skew-x-12">
             <span className="skew-x-12 text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
-              <span className="w-1.5 h-1.5 bg-black animate-pulse rounded-full"></span> Need help?
+              <span className="w-1.5 h-1.5 bg-black animate-pulse rounded-full"></span> Connection_Live
             </span>
           </div>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-white uppercase mb-4 leading-none">
@@ -37,27 +38,30 @@ export default function Support() {
             <h2 className="text-2xl font-display font-bold text-white uppercase tracking-wider">Direct Comms</h2>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-            {channels.map((channel, idx) => (
-              <a 
-                key={idx} 
-                href={channel.link} 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="bg-[#111] p-6 clip-card border-b-2 border-transparent hover:border-[#FFD600] transition-colors group flex items-start gap-4 shadow-lg"
-              >
-                <div className="w-12 h-12 bg-[#050505] border border-[#222] flex items-center justify-center group-hover:border-[#FFD600] transition-colors clip-button shrink-0">
-                  <channel.icon size={20} className="text-[#FFD600]" />
-                </div>
-                <div className="flex-grow">
-                  <div className="flex justify-between items-start">
-                    <h3 className="text-sm font-black text-white uppercase tracking-widest">{channel.name}</h3>
-                    <ExternalLink size={14} className="text-neutral-600 group-hover:text-[#FFD600] transition-colors" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            {channels.map((channel, idx) => {
+              const IconComponent = channel.icon
+              return (
+                <a 
+                  key={idx} 
+                  href={channel.link} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="bg-[#111] p-6 clip-card border-b-2 border-transparent hover:border-[#FFD600] transition-colors group flex items-start gap-4 shadow-lg"
+                >
+                  <div className="w-12 h-12 bg-[#050505] border border-[#222] flex items-center justify-center group-hover:border-[#FFD600] transition-colors clip-button shrink-0">
+                    <IconComponent size={20} className="text-[#FFD600]" />
                   </div>
-                  <p className="text-xs font-medium text-neutral-400 mt-1.5">{channel.handle}</p>
-                </div>
-              </a>
-            ))}
+                  <div className="flex-grow overflow-hidden">
+                    <div className="flex justify-between items-start">
+                      <h3 className="text-sm font-black text-white uppercase tracking-widest">{channel.name}</h3>
+                      <ExternalLink size={14} className="text-neutral-600 group-hover:text-[#FFD600] transition-colors shrink-0 ml-2" />
+                    </div>
+                    <p className="text-xs font-medium text-neutral-400 mt-1.5 truncate">{channel.handle}</p>
+                  </div>
+                </a>
+              )
+            })}
           </div>
         </div>
 
@@ -72,11 +76,11 @@ export default function Support() {
               <iframe
                 src="https://maps.google.com/maps?q=14.782384,121.046344&t=&z=17&ie=UTF8&iwloc=&output=embed"
                 className="absolute inset-0 w-full h-full border-0"
-                allowFullScreen=""
+                allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 title="HQ Location Map"
-              ></iframe>
+              />
             </div>
             
             <div className="absolute top-6 right-6 bg-[#050505] border border-[#FFD600]/30 text-[#FFD600] px-4 py-2 flex items-center gap-2 clip-button shadow-[0_0_20px_rgba(255,214,0,0.15)] pointer-events-none backdrop-blur-md">
@@ -99,13 +103,13 @@ export default function Support() {
                 <Shield size={16} className="text-[#FFD600]" />
                 <span className="text-[10px] font-black text-neutral-600 uppercase tracking-widest">Phase_01</span>
               </div>
-              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="relative w-full aspect-video bg-[#050505] border border-[#222] overflow-hidden mb-4 group-hover:border-[#FFD600] transition-colors clip-button">
-                <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=800&auto=format&fit=crop" alt="Tutorial" className="absolute inset-0 w-full h-full object-cover opacity-30 grayscale group-hover:grayscale-0 group-hover:opacity-70 transition-all duration-500" />
+              <a href="https://www.youtube.com/watch?v=F9VmWoES8U4" target="_blank" rel="noopener noreferrer" className="relative w-full aspect-video bg-[#050505] border border-[#222] overflow-hidden mb-4 group-hover:border-[#FFD600] transition-colors clip-button">
+                <img src="https://img.youtube.com/vi/F9VmWoES8U4/hqdefault.jpg" alt="Tutorial" className="absolute inset-0 w-full h-full object-cover opacity-30 grayscale group-hover:grayscale-0 group-hover:opacity-70 transition-all duration-500" />
                 <div className="absolute inset-0 flex items-center justify-center">
                   <PlayCircle size={36} className="text-[#FFD600] drop-shadow-[0_0_10px_rgba(255,214,0,0.5)] group-hover:scale-110 transition-transform" strokeWidth={1.5} />
                 </div>
               </a>
-              <h4 className="text-base font-display font-bold text-white uppercase tracking-wider mb-1">Security Override</h4>
+              <h4 className="text-base font-display font-bold text-white uppercase tracking-wider mb-1">Disable Windows Defender</h4>
               <p className="text-[10px] font-medium text-neutral-400 leading-relaxed">Disable real-time protection protocols to halt false-positive binary deletions.</p>
             </div>
 
@@ -114,13 +118,13 @@ export default function Support() {
                 <Folder size={16} className="text-[#FFD600]" />
                 <span className="text-[10px] font-black text-neutral-600 uppercase tracking-widest">Phase_02</span>
               </div>
-              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="relative w-full aspect-video bg-[#050505] border border-[#222] overflow-hidden mb-4 group-hover:border-[#FFD600] transition-colors clip-button">
-                <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800&auto=format&fit=crop" alt="Tutorial" className="absolute inset-0 w-full h-full object-cover opacity-30 grayscale group-hover:grayscale-0 group-hover:opacity-70 transition-all duration-500" />
+              <a href="https://www.youtube.com/watch?v=hDR3jRBq9pg" target="_blank" rel="noopener noreferrer" className="relative w-full aspect-video bg-[#050505] border border-[#222] overflow-hidden mb-4 group-hover:border-[#FFD600] transition-colors clip-button">
+                <img src="https://img.youtube.com/vi/hDR3jRBq9pg/hqdefault.jpg" alt="Tutorial" className="absolute inset-0 w-full h-full object-cover opacity-30 grayscale group-hover:grayscale-0 group-hover:opacity-70 transition-all duration-500" />
                 <div className="absolute inset-0 flex items-center justify-center">
                   <PlayCircle size={36} className="text-[#FFD600] drop-shadow-[0_0_10px_rgba(255,214,0,0.5)] group-hover:scale-110 transition-transform" strokeWidth={1.5} />
                 </div>
               </a>
-              <h4 className="text-base font-display font-bold text-white uppercase tracking-wider mb-1">Whitelist Config</h4>
+              <h4 className="text-base font-display font-bold text-white uppercase tracking-wider mb-1">Windows Defender Whitelist Exclusions</h4>
               <p className="text-[10px] font-medium text-neutral-400 leading-relaxed">Establish folder exclusions and manually inject required DirectX/VC++ variables.</p>
             </div>
 
@@ -129,13 +133,13 @@ export default function Support() {
                 <MonitorPlay size={16} className="text-[#FFD600]" />
                 <span className="text-[10px] font-black text-neutral-600 uppercase tracking-widest">Phase_03</span>
               </div>
-              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="relative w-full aspect-video bg-[#050505] border border-[#222] overflow-hidden mb-4 group-hover:border-[#FFD600] transition-colors clip-button">
-                <img src="https://images.unsplash.com/photo-1587202372634-32705e3bf49c?q=80&w=800&auto=format&fit=crop" alt="Tutorial" className="absolute inset-0 w-full h-full object-cover opacity-30 grayscale group-hover:grayscale-0 group-hover:opacity-70 transition-all duration-500" />
+              <a href="https://www.youtube.com/watch?v=ytbw7q2Rqdw" target="_blank" rel="noopener noreferrer" className="relative w-full aspect-video bg-[#050505] border border-[#222] overflow-hidden mb-4 group-hover:border-[#FFD600] transition-colors clip-button">
+                <img src="https://img.youtube.com/vi/ytbw7q2Rqdw/hqdefault.jpg" alt="Tutorial" className="absolute inset-0 w-full h-full object-cover opacity-30 grayscale group-hover:grayscale-0 group-hover:opacity-70 transition-all duration-500" />
                 <div className="absolute inset-0 flex items-center justify-center">
                   <PlayCircle size={36} className="text-[#FFD600] drop-shadow-[0_0_10px_rgba(255,214,0,0.5)] group-hover:scale-110 transition-transform" strokeWidth={1.5} />
                 </div>
               </a>
-              <h4 className="text-base font-display font-bold text-white uppercase tracking-wider mb-1">Mount & Execute</h4>
+              <h4 className="text-base font-display font-bold text-white uppercase tracking-wider mb-1">Install Redistributable Drivers</h4>
               <p className="text-[10px] font-medium text-neutral-400 leading-relaxed">Finalize drive mounting procedures and execute optimized local binaries.</p>
             </div>
 

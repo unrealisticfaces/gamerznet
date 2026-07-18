@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { Image as ImageIcon, Search, MonitorPlay, HardDrive, ShoppingCart, Trash2, CheckCircle2, AlertTriangle, ChevronDown, X, Info, Shield, Save, PlayCircle, Send, Download, FileText } from 'lucide-react'
+import { Image as ImageIcon, Search, MonitorPlay, HardDrive, ShoppingCart, Trash2, CheckCircle2, AlertTriangle, ChevronDown, X, Info, Shield, Save, PlayCircle, Send, Download, FileText, ExternalLink } from 'lucide-react'
 import { ref, get, child } from 'firebase/database'
 import { db } from '../firebase'
 
@@ -231,7 +231,7 @@ export default function Products() {
             </div>
             
             <div className="mt-6 text-center">
-              <span className="text-[14px] text-neutral-500 font-medium">https://www.facebook.com/gamerznetisback</span>
+              <span className="text-[10px] text-neutral-500 font-medium">System strictly requires the .txt file to initiate physical deployment procedures.</span>
             </div>
 
           </div>
@@ -305,6 +305,19 @@ export default function Products() {
                   <h3 className="text-xs font-black text-white uppercase tracking-widest mb-1.5 flex items-center gap-2">System Specs</h3>
                   <p className="text-[11px] md:text-xs text-neutral-300 font-sans whitespace-pre-wrap leading-relaxed">{previewGame.minSpecs || 'System parameters not provided.'}</p>
                 </div>
+
+                {previewGame.setupGuide && (
+                  <div className="border-l-2 border-[#333] pl-3 bg-[#0a0a0a] p-3 clip-card">
+                    <h3 className="text-xs font-black text-white uppercase tracking-widest mb-1.5 flex items-center gap-2">How to Setup</h3>
+                    {previewGame.setupGuide.startsWith('http') ? (
+                      <a href={previewGame.setupGuide} target="_blank" rel="noopener noreferrer" className="text-[11px] md:text-xs text-[#FFD600] hover:text-white transition-colors font-sans flex items-center gap-1">
+                        Link on How to Setup <ExternalLink size={12} />
+                      </a>
+                    ) : (
+                      <p className="text-[11px] md:text-xs text-neutral-300 font-sans whitespace-pre-wrap leading-relaxed">{previewGame.setupGuide}</p>
+                    )}
+                  </div>
+                )}
               </div>
               
               <div className="mt-4 pt-4 border-t border-[#222] flex justify-end shrink-0">

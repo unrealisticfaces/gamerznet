@@ -24,7 +24,7 @@ export default function AdminSettings() {
   const [visibleCount, setVisibleCount] = useState(50)
   
   const [form, setForm] = useState({
-    title: '', category: 'PC', size: '', image: '', video: '', screenshots: '', description: '', minSpecs: '', isTrending: false
+    title: '', category: 'PC', size: '', image: '', video: '', screenshots: '', description: '', minSpecs: '', setupGuide: '', isTrending: false
   })
 
   useEffect(() => {
@@ -126,7 +126,7 @@ export default function AdminSettings() {
         const newRef = push(ref(db, 'games'))
         await set(newRef, { ...payload, createdAt: new Date().toISOString() })
       }
-      setForm({ title: '', category: 'PC', size: '', image: '', video: '', screenshots: '', description: '', minSpecs: '', isTrending: false })
+      setForm({ title: '', category: 'PC', size: '', image: '', video: '', screenshots: '', description: '', minSpecs: '', setupGuide: '', isTrending: false })
       fetchDatabase()
     } catch (error) {} finally {
       setIsSubmitting(false)
@@ -169,6 +169,7 @@ export default function AdminSettings() {
               screenshots: screens,
               description: detailData.description_raw || '',
               minSpecs: '',
+              setupGuide: '',
               isTrending: false,
               createdAt: new Date().toISOString()
             }
@@ -199,6 +200,7 @@ export default function AdminSettings() {
       screenshots: g.screenshots ? g.screenshots.join(', ') : '',
       description: g.description || '', 
       minSpecs: g.minSpecs || '', 
+      setupGuide: g.setupGuide || '',
       isTrending: g.isTrending || false 
     })
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -206,7 +208,7 @@ export default function AdminSettings() {
 
   const handleCancelEdit = () => {
     setEditingId(null)
-    setForm({ title: '', category: 'PC', size: '', image: '', video: '', screenshots: '', description: '', minSpecs: '', isTrending: false })
+    setForm({ title: '', category: 'PC', size: '', image: '', video: '', screenshots: '', description: '', minSpecs: '', setupGuide: '', isTrending: false })
   }
 
   const handleDelete = async (id) => {
@@ -375,6 +377,11 @@ export default function AdminSettings() {
             <div className="flex flex-col gap-2">
               <label className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Minimum Specs</label>
               <textarea value={form.minSpecs} onChange={e=>setForm({...form, minSpecs: e.target.value})} className="w-full bg-[#111] border border-[#333] focus:border-[#FFD600] p-3 text-xs font-medium text-white focus:outline-none min-h-[80px] resize-y rounded-sm" />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Setup Guide (URL or Instructions)</label>
+              <textarea value={form.setupGuide} onChange={e=>setForm({...form, setupGuide: e.target.value})} className="w-full bg-[#111] border border-[#333] focus:border-[#FFD600] p-3 text-xs font-medium text-white focus:outline-none min-h-[60px] resize-y rounded-sm" placeholder="https://youtube.com/... or text instructions" />
             </div>
 
             <div className="flex gap-3 mt-4 pt-6 border-t border-[#222]">
