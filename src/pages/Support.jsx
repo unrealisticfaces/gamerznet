@@ -1,4 +1,7 @@
-import { MapPin, MessageSquare, PlayCircle, Wrench, Shield, Folder, MonitorPlay, Mail, MessageCircle, ExternalLink } from 'lucide-react'
+import { MapPin, MessageSquare, PlayCircle, Wrench, MonitorPlay, Mail, MessageCircle, ExternalLink, AlertCircle } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { ref, get, child } from 'firebase/database'
+import { db } from '../firebase'
 
 const channels = [
   { name: "WHATSAPP", handle: "0952 467 9636", link: "https://wa.me/639524679636", icon: MessageCircle },
@@ -7,7 +10,37 @@ const channels = [
   { name: "EMAIL", handle: "gamerz.nets@gmail.com", link: "mailto:gamerz.nets@gmail.com", icon: Mail }
 ]
 
+const getYoutubeId = (url) => {
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/
+  const match = url?.match(regExp)
+  return (match && match[2].length === 11) ? match[2] : null
+}
+
 export default function Support() {
+  const [tutorials, setTutorials] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchTutorials = async () => {
+      try {
+        const dbRef = ref(db)
+        const snapshot = await get(child(dbRef, 'tutorials'))
+        if (snapshot.exists()) {
+          const data = snapshot.val()
+          const formattedData = Object.keys(data)
+            .map(key => ({ id: key, ...data[key] }))
+            .sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1))
+          setTutorials(formattedData)
+        } else {
+          setTutorials([])
+        }
+      } catch (error) {} finally {
+        setLoading(false)
+      }
+    }
+    fetchTutorials()
+  }, [])
+
   return (
     <div className="w-full flex flex-col flex-grow bg-[#050505]">
       
@@ -96,54 +129,44 @@ export default function Support() {
             <h2 className="text-2xl font-display font-bold text-white uppercase tracking-wider">Tutorial Directives</h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            
-            <div className="bg-[#111] p-5 flex flex-col group hover:bg-[#151515] transition-colors clip-card border-b-2 border-transparent hover:border-[#FFD600]">
-              <div className="flex items-center justify-between mb-4 border-b border-[#222] pb-3">
-                <Shield size={16} className="text-[#FFD600]" />
-                <span className="text-[10px] font-black text-neutral-600 uppercase tracking-widest">Phase_01</span>
-              </div>
-              <a href="https://www.youtube.com/watch?v=F9VmWoES8U4" target="_blank" rel="noopener noreferrer" className="relative w-full aspect-video bg-[#050505] border border-[#222] overflow-hidden mb-4 group-hover:border-[#FFD600] transition-colors clip-button">
-                <img src="https://img.youtube.com/vi/F9VmWoES8U4/hqdefault.jpg" alt="Tutorial" className="absolute inset-0 w-full h-full object-cover opacity-30 grayscale group-hover:grayscale-0 group-hover:opacity-70 transition-all duration-500" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <PlayCircle size={36} className="text-[#FFD600] drop-shadow-[0_0_10px_rgba(255,214,0,0.5)] group-hover:scale-110 transition-transform" strokeWidth={1.5} />
-                </div>
-              </a>
-              <h4 className="text-base font-display font-bold text-white uppercase tracking-wider mb-1">Disable Windows Defender</h4>
-              <p className="text-[10px] font-medium text-neutral-400 leading-relaxed">Disable real-time protection protocols to halt false-positive binary deletions.</p>
+          {loading ? (
+            <div className="flex justify-center py-12">
+              <div className="text-sm font-bold text-[#FFD600] animate-pulse uppercase tracking-widest">Syncing Directives...</div>
             </div>
-
-            <div className="bg-[#111] p-5 flex flex-col group hover:bg-[#151515] transition-colors clip-card border-b-2 border-transparent hover:border-[#FFD600]">
-              <div className="flex items-center justify-between mb-4 border-b border-[#222] pb-3">
-                <Folder size={16} className="text-[#FFD600]" />
-                <span className="text-[10px] font-black text-neutral-600 uppercase tracking-widest">Phase_02</span>
-              </div>
-              <a href="https://www.youtube.com/watch?v=hDR3jRBq9pg" target="_blank" rel="noopener noreferrer" className="relative w-full aspect-video bg-[#050505] border border-[#222] overflow-hidden mb-4 group-hover:border-[#FFD600] transition-colors clip-button">
-                <img src="https://img.youtube.com/vi/hDR3jRBq9pg/hqdefault.jpg" alt="Tutorial" className="absolute inset-0 w-full h-full object-cover opacity-30 grayscale group-hover:grayscale-0 group-hover:opacity-70 transition-all duration-500" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <PlayCircle size={36} className="text-[#FFD600] drop-shadow-[0_0_10px_rgba(255,214,0,0.5)] group-hover:scale-110 transition-transform" strokeWidth={1.5} />
-                </div>
-              </a>
-              <h4 className="text-base font-display font-bold text-white uppercase tracking-wider mb-1">Windows Defender Whitelist Exclusions</h4>
-              <p className="text-[10px] font-medium text-neutral-400 leading-relaxed">Establish folder exclusions and manually inject required DirectX/VC++ variables.</p>
+          ) : tutorials.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 border border-[#222] bg-[#111] clip-card">
+              <AlertCircle size={32} className="text-neutral-600 mb-4" />
+              <p className="text-xs font-bold text-neutral-500 uppercase tracking-widest">No Tutorial Directives Available.</p>
             </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {tutorials.map((tutorial, index) => {
+                const videoId = getYoutubeId(tutorial.url)
+                const thumbnailUrl = videoId 
+                  ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
+                  : 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=800&auto=format&fit=crop'
 
-            <div className="bg-[#111] p-5 flex flex-col group hover:bg-[#151515] transition-colors clip-card border-b-2 border-transparent hover:border-[#FFD600]">
-              <div className="flex items-center justify-between mb-4 border-b border-[#222] pb-3">
-                <MonitorPlay size={16} className="text-[#FFD600]" />
-                <span className="text-[10px] font-black text-neutral-600 uppercase tracking-widest">Phase_03</span>
-              </div>
-              <a href="https://www.youtube.com/watch?v=ytbw7q2Rqdw" target="_blank" rel="noopener noreferrer" className="relative w-full aspect-video bg-[#050505] border border-[#222] overflow-hidden mb-4 group-hover:border-[#FFD600] transition-colors clip-button">
-                <img src="https://img.youtube.com/vi/ytbw7q2Rqdw/hqdefault.jpg" alt="Tutorial" className="absolute inset-0 w-full h-full object-cover opacity-30 grayscale group-hover:grayscale-0 group-hover:opacity-70 transition-all duration-500" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <PlayCircle size={36} className="text-[#FFD600] drop-shadow-[0_0_10px_rgba(255,214,0,0.5)] group-hover:scale-110 transition-transform" strokeWidth={1.5} />
-                </div>
-              </a>
-              <h4 className="text-base font-display font-bold text-white uppercase tracking-wider mb-1">Install Redistributable Drivers</h4>
-              <p className="text-[10px] font-medium text-neutral-400 leading-relaxed">Finalize drive mounting procedures and execute optimized local binaries.</p>
+                return (
+                  <div key={tutorial.id} className="bg-[#111] p-5 flex flex-col group hover:bg-[#151515] transition-colors clip-card border-b-2 border-transparent hover:border-[#FFD600] shadow-lg">
+                    <div className="flex items-center justify-between mb-4 border-b border-[#222] pb-3">
+                      <PlayCircle size={16} className="text-[#FFD600]" />
+                      <span className="text-[10px] font-black text-neutral-600 uppercase tracking-widest">
+                        Phase_{String(index + 1).padStart(2, '0')}
+                      </span>
+                    </div>
+                    <a href={tutorial.url} target="_blank" rel="noopener noreferrer" className="relative w-full aspect-video bg-[#050505] border border-[#222] overflow-hidden mb-4 group-hover:border-[#FFD600] transition-colors clip-button">
+                      <img src={thumbnailUrl} alt={tutorial.title} className="absolute inset-0 w-full h-full object-cover opacity-30 grayscale group-hover:grayscale-0 group-hover:opacity-70 transition-all duration-500" />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <PlayCircle size={36} className="text-[#FFD600] drop-shadow-[0_0_10px_rgba(255,214,0,0.5)] group-hover:scale-110 transition-transform" strokeWidth={1.5} />
+                      </div>
+                    </a>
+                    <h4 className="text-base font-display font-bold text-white uppercase tracking-wider mb-2 line-clamp-1">{tutorial.title}</h4>
+                    <p className="text-[10px] font-medium text-neutral-400 leading-relaxed line-clamp-3">{tutorial.description}</p>
+                  </div>
+                )
+              })}
             </div>
-
-          </div>
+          )}
         </div>
 
       </div>

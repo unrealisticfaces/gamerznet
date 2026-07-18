@@ -1,30 +1,10 @@
 import { Link } from 'react-router-dom'
 import { MonitorPlay, HardDrive, PackageCheck, Gamepad2, Zap, ChevronRight, WifiOff, ShieldCheck, Cpu } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
-import { ref, get, child } from 'firebase/database'
-import { db } from '../firebase'
 
 export default function Home() {
-  const [trendingGames, setTrendingGames] = useState([])
   const [visibleSteps, setVisibleSteps] = useState([])
   const stepRefs = useRef([])
-
-  useEffect(() => {
-    const fetchTrending = async () => {
-      try {
-        const dbRef = ref(db)
-        const snapshot = await get(child(dbRef, 'games'))
-        if (snapshot.exists()) {
-          const data = snapshot.val()
-          const gamesList = Object.keys(data)
-            .map(key => ({ id: key, ...data[key] }))
-            .filter(game => game.isTrending)
-          setTrendingGames(gamesList)
-        }
-      } catch (error) {}
-    }
-    fetchTrending()
-  }, [])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -56,10 +36,6 @@ export default function Home() {
 
         <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8 relative z-20 flex flex-col items-start pt-10">
           
-          {/* <div className="bg-[#FFD600] text-black px-4 py-1.5 flex items-center gap-2 mb-6 clip-button -skew-x-12">
-            <span className="skew-x-12 text-xs font-black uppercase tracking-widest">System Ready</span>
-          </div> */}
-
           <h1 className="text-6xl md:text-7xl lg:text-[100px] font-display font-bold text-white uppercase leading-[0.85] mb-6 drop-shadow-[0_0_20px_rgba(255,214,0,0.15)] -ml-1">
             PORTABLE.<br/>
             <span className="text-[#FFD600]">MODIFIED.</span><br/>
@@ -87,22 +63,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {trendingGames.length > 0 && (
-        <div className="w-full bg-[#FFD600] py-3 overflow-hidden flex items-center shadow-[0_0_30px_rgba(255,214,0,0.15)] relative z-30 border-y-2 border-black">
-          <div className="px-8 shrink-0 bg-[#FFD600] z-10 border-r-2 border-black">
-            <span className="text-xs font-black text-black uppercase tracking-widest">Trending Now</span>
-          </div>
-          <div className="flex items-center gap-12 animate-marquee whitespace-nowrap pl-12">
-            {[...trendingGames, ...trendingGames, ...trendingGames].map((game, idx) => (
-              <div key={`${game.id}-${idx}`} className="flex items-center gap-4 shrink-0">
-                <span className="text-2xl font-display font-bold text-black uppercase tracking-wider">{game.title}</span>
-                <span className="text-black/30 font-black text-xl">+</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
 
       <section className="w-full bg-[#050505] border-b-2 border-[#111] py-20 relative overflow-hidden">
         <div className="max-w-[1600px] mx-auto px-4 md:px-8 relative z-10">

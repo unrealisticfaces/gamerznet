@@ -155,6 +155,70 @@ export default function Products() {
     return list
   }, [previewGame])
 
+  const renderGameCard = (game) => {
+    const isSelected = cartIds.has(game.id)
+    return (
+      <div 
+        key={game.id} 
+        className={`w-full bg-[#111] flex flex-col relative group transition-colors duration-300 clip-card ${
+          isSelected ? 'border-b-2 border-[#FFD600]' : 'border-b-2 border-transparent hover:border-[#333]'
+        }`}
+      >
+        {isSelected && (
+          <div className="absolute top-2 left-2 z-30 bg-[#FFD600] text-black w-5 h-5 flex items-center justify-center clip-button shadow-md pointer-events-none">
+            <CheckCircle2 size={10} strokeWidth={3} />
+          </div>
+        )}
+        
+        <div 
+          onClick={() => handleOpenModal(game)}
+          className="aspect-[3/4] w-full bg-[#050505] relative overflow-hidden flex items-center justify-center cursor-pointer border-b border-[#222]"
+        >
+          {game.image ? (
+            <img src={game.image} alt={game.title} loading="lazy" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100" />
+          ) : (
+            <Shield size={24} className="text-[#222] group-hover:text-[#FFD600] transition-colors" />
+          )}
+          
+          <div className="absolute inset-0 bg-gradient-to-t from-[#111] via-transparent to-transparent opacity-90"></div>
+          
+          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/50 backdrop-blur-[2px]">
+            <span className="px-2.5 py-1.5 bg-[#FFD600] text-black text-[9px] font-black uppercase tracking-widest clip-button flex items-center gap-1.5 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 pointer-events-none">
+              <Info size={12} /> Preview
+            </span>
+          </div>
+          
+          <span className="absolute top-2 right-2 z-20 bg-[#050505] px-1.5 py-0.5 text-[8px] font-black text-[#FFD600] border border-[#FFD600]/30 uppercase tracking-widest clip-button pointer-events-none">
+            {game.category}
+          </span>
+        </div>
+        
+        <div className="p-3 flex flex-col flex-grow bg-[#111]">
+          <h3 style={{ fontFamily: "'Poppins', sans-serif" }} className={`text-xs md:text-sm font-normal mb-1.5 line-clamp-2 leading-snug ${isSelected ? 'text-[#FFD600]' : 'text-white group-hover:text-[#FFD600] transition-colors'}`}>
+            {game.title}
+          </h3>
+          <div className="mt-auto flex flex-col gap-2">
+            <div className="text-[9px] font-black text-neutral-500 tracking-widest border-l-2 border-[#333] pl-2">
+              {game.size} GB
+            </div>
+            
+            <button
+              onClick={() => toggleGameSelection(game)}
+              className={`w-full py-2 font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-1.5 transition-colors clip-button cursor-pointer ${
+                isSelected
+                  ? 'bg-[#222] text-[#FFD600] hover:bg-[#333]'
+                  : 'bg-[#050505] text-white hover:bg-[#FFD600] hover:text-black border border-[#222] hover:border-[#FFD600]'
+              }`}
+            >
+              {isSelected ? <Trash2 size={10} /> : <ShoppingCart size={10} />}
+              {isSelected ? 'Remove' : 'Add to List'}
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8 relative pb-24 pt-6">
       
@@ -311,7 +375,7 @@ export default function Products() {
                     <h3 className="text-xs font-black text-white uppercase tracking-widest mb-1.5 flex items-center gap-2">How to Setup</h3>
                     {previewGame.setupGuide.startsWith('http') ? (
                       <a href={previewGame.setupGuide} target="_blank" rel="noopener noreferrer" className="text-[11px] md:text-xs text-[#FFD600] hover:text-white transition-colors font-sans flex items-center gap-1">
-                        Link on How to Setup <ExternalLink size={12} />
+                        Access Setup Protocol <ExternalLink size={12} />
                       </a>
                     ) : (
                       <p className="text-[11px] md:text-xs text-neutral-300 font-sans whitespace-pre-wrap leading-relaxed">{previewGame.setupGuide}</p>
@@ -496,69 +560,7 @@ export default function Products() {
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-8 gap-3 md:gap-4">
-          {filteredGames.map(game => {
-            const isSelected = cartIds.has(game.id)
-            return (
-              <div 
-                key={game.id} 
-                className={`w-full bg-[#111] flex flex-col relative group transition-colors duration-300 clip-card ${
-                  isSelected ? 'border-b-2 border-[#FFD600]' : 'border-b-2 border-transparent hover:border-[#333]'
-                }`}
-              >
-                {isSelected && (
-                  <div className="absolute top-2 left-2 z-30 bg-[#FFD600] text-black w-5 h-5 flex items-center justify-center clip-button shadow-md pointer-events-none">
-                    <CheckCircle2 size={10} strokeWidth={3} />
-                  </div>
-                )}
-                
-                <div 
-                  onClick={() => handleOpenModal(game)}
-                  className="aspect-[3/4] w-full bg-[#050505] relative overflow-hidden flex items-center justify-center cursor-pointer border-b border-[#222]"
-                >
-                  {game.image ? (
-                    <img src={game.image} alt={game.title} loading="lazy" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100" />
-                  ) : (
-                    <Shield size={24} className="text-[#222] group-hover:text-[#FFD600] transition-colors" />
-                  )}
-                  
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#111] via-transparent to-transparent opacity-90"></div>
-                  
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/50 backdrop-blur-[2px]">
-                    <span className="px-2.5 py-1.5 bg-[#FFD600] text-black text-[9px] font-black uppercase tracking-widest clip-button flex items-center gap-1.5 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 pointer-events-none">
-                      <Info size={12} /> Preview
-                    </span>
-                  </div>
-                  
-                  <span className="absolute top-2 right-2 z-20 bg-[#050505] px-1.5 py-0.5 text-[8px] font-black text-[#FFD600] border border-[#FFD600]/30 uppercase tracking-widest clip-button pointer-events-none">
-                    {game.category}
-                  </span>
-                </div>
-                
-                <div className="p-3 flex flex-col flex-grow bg-[#111]">
-                  <h3 style={{ fontFamily: "'Poppins', sans-serif" }} className={`text-xs md:text-sm font-normal mb-1.5 line-clamp-2 leading-snug ${isSelected ? 'text-[#FFD600]' : 'text-white group-hover:text-[#FFD600] transition-colors'}`}>
-                    {game.title}
-                  </h3>
-                  <div className="mt-auto flex flex-col gap-2">
-                    <div className="text-[9px] font-black text-neutral-500 tracking-widest border-l-2 border-[#333] pl-2">
-                      {game.size} GB
-                    </div>
-                    
-                    <button
-                      onClick={() => toggleGameSelection(game)}
-                      className={`w-full py-2 font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-1.5 transition-colors clip-button cursor-pointer ${
-                        isSelected
-                          ? 'bg-[#222] text-[#FFD600] hover:bg-[#333]'
-                          : 'bg-[#050505] text-white hover:bg-[#FFD600] hover:text-black border border-[#222] hover:border-[#FFD600]'
-                      }`}
-                    >
-                      {isSelected ? <Trash2 size={10} /> : <ShoppingCart size={10} />}
-                      {isSelected ? 'Remove' : 'Add to List'}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )
-          })}
+          {filteredGames.map(renderGameCard)}
         </div>
       )}
     </div>
