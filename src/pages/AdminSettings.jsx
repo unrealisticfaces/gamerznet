@@ -5,7 +5,7 @@ import { ref, push, set, get, child, update, remove } from 'firebase/database'
 import { useNavigate } from 'react-router-dom'
 import { Database, Link as LinkIcon, Power, Shield, Settings, Trash2, Edit2, Loader2, Wand2, Search, Save, TrendingUp, Video, ImagePlus, CheckSquare, Square, Upload, PlayCircle, Layers } from 'lucide-react'
 
-const RAWG_API_KEY = import.meta.env.VITE_RAWG_API_KEY
+const RAWG_API_KEY = import.meta.env?.VITE_RAWG_API_KEY || 'a73ea23a91934b4c9cce7dbe01a9708d'
 
 export default function AdminSettings() {
   const navigate = useNavigate()
@@ -126,8 +126,12 @@ export default function AdminSettings() {
           screenshots: screens,
           description: detailData.description_raw || ''
         }))
+      } else {
+        alert('Asset not found in RAWG database.')
       }
-    } catch (error) {} finally {
+    } catch (error) {
+      alert('API connection failed. Check your network or API key.')
+    } finally {
       setIsFetchingAPI(false)
     }
   }
