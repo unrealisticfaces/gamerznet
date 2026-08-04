@@ -5,8 +5,6 @@ import { ref, push, set, get, child, update, remove } from 'firebase/database'
 import { useNavigate } from 'react-router-dom'
 import { Database, Link as LinkIcon, Power, Shield, Settings, Trash2, Edit2, Loader2, Wand2, Search, Save, TrendingUp, Video, ImagePlus, CheckSquare, Square, Upload, PlayCircle, Layers } from 'lucide-react'
 
-const RAWG_API_KEY = import.meta.env?.VITE_RAWG_API_KEY || 'a73ea23a91934b4c9cce7dbe01a9708d'
-
 export default function AdminSettings() {
   const navigate = useNavigate()
   const fileInputRef = useRef(null)
@@ -103,34 +101,84 @@ export default function AdminSettings() {
     } catch (error) {}
   }
 
+  const fetchGameData = async (searchTitle) => {
+    let result = { title: searchTitle, image: '', screenshots: [], description: '', minSpecs: '', detectedSize: '' }
+
+    try {
+      const igdbRes = await fetch('/api/igdb', { method: 'POST', body: JSON.stringify({ search: searchTitle }) })
+      if (igdbRes.ok) {
+        const igdbData = await igdbRes.json()
+        if (igdbData && igdbData.length > 0) {
+          const item = igdbData[0]
+          result.title = item.name
+          result.image = item.cover?.url ? item.cover.url.replace('t_thumb', 't_1080p').replace('//', 'https://') : ''
+          result.screenshots = item.screenshots ? item.screenshots.map(s => s.url.replace('t_thumb', 't_1080p').replace('//', 'https://')).slice(0, 3) : []
+          result.description = item.summary || ''
+        }
+      }
+    } catch (e) {}
+
+    try {
+      const steamRes = await fetch('/api/steam', { method: 'POST', body: JSON.stringify({ search: result.title }) })
+      if (steamRes.ok) {
+        const steamData = await steamRes.json()
+        if (steamData && steamData.name) {
+          if (!result.image) result.image = steamData.header_image || ''
+          if (result.screenshots.length === 0) result.screenshots = steamData.screenshots ? steamData.screenshots.map(s => s.path_full).slice(0, 3) : []
+          if (!result.description) result.description = steamData.short_description || ''
+          
+          if (steamData.pc_requirements && steamData.pc_requirements.minimum) {
+            const cleanSpecs = steamData.pc_requirements.minimum.replace(/<[^>]+>/g, '\n').replace(/\n\s*\n/g, '\n').replace('Minimum:', '').trim()
+            result.minSpecs = cleanSpecs
+            
+            const storageMatch = cleanSpecs.match(/(?:storage|space|disk).*?(\d+(?:\.\d+)?)\s*(gb|mb)/i)
+            if (storageMatch) {
+              let val = parseFloat(storageMatch[1])
+              if (storageMatch[2].toLowerCase() === 'mb') val = val / 1024
+              result.detectedSize = Math.ceil(val).toString()
+            }
+          }
+        }
+      }
+    } catch (e) {}
+
+    if (!result.image && !result.description) {
+      try {
+        const f2pRes = await fetch('/api/freetogame', { method: 'POST', body: JSON.stringify({ search: searchTitle }) })
+        if (f2pRes.ok) {
+          const f2pData = await f2pRes.json()
+          if (f2pData && f2pData.title) {
+            result.title = f2pData.title
+            result.image = f2pData.thumbnail || ''
+            result.description = f2pData.short_description || ''
+          }
+        }
+      } catch (e) {}
+    }
+
+    return result.image || result.description ? result : null
+  }
+
   const handleAutoFill = async () => {
     if (!form.title) return
     setIsFetchingAPI(true)
     try {
-      const searchRes = await fetch(`https://api.rawg.io/api/games?search=${encodeURIComponent(form.title)}&key=${RAWG_API_KEY}&page_size=1`)
-      const searchData = await searchRes.json()
-
-      if (searchData.results && searchData.results.length > 0) {
-        const target = searchData.results[0]
-        const detailRes = await fetch(`https://api.rawg.io/api/games/${target.id}?key=${RAWG_API_KEY}`)
-        const detailData = await detailRes.json()
-        
-        const screens = target.short_screenshots 
-          ? target.short_screenshots.map(s => s.image).filter(img => img !== target.background_image).slice(0, 3).join(', ') 
-          : ''
-
+      const target = await fetchGameData(form.title)
+      if (target) {
         setForm(prev => ({
-          ...prev, 
-          title: target.name, 
-          image: target.background_image || '', 
-          screenshots: screens,
-          description: detailData.description_raw || ''
+          ...prev,
+          title: target.title,
+          image: target.image,
+          screenshots: target.screenshots.join(', '),
+          description: target.description,
+          minSpecs: target.minSpecs,
+          size: target.detectedSize ? target.detectedSize : prev.size
         }))
       } else {
-        alert('Asset not found in RAWG database.')
+        alert('Asset not found in databases.')
       }
     } catch (error) {
-      alert('API connection failed. Check your network or API key.')
+      alert('API connection failed. Check your network.')
     } finally {
       setIsFetchingAPI(false)
     }
@@ -140,9 +188,16 @@ export default function AdminSettings() {
     e.preventDefault()
     setIsSubmitting(true)
     
+    const isDuplicate = games.some(g => g.title.toLowerCase() === form.title.toLowerCase() && g.id !== editingId)
+    if (isDuplicate) {
+      alert('DUPLICATE DETECTED: Asset already exists in the database.')
+      setIsSubmitting(false)
+      return
+    }
+    
     const payload = {
       ...form,
-      size: Number(form.size),
+      size: Math.round(Number(form.size)) || 0,
       screenshots: form.screenshots ? form.screenshots.split(',').map(s => s.trim()).filter(Boolean) : []
     }
 
@@ -189,39 +244,41 @@ export default function AdminSettings() {
     reader.onload = async (event) => {
       const text = event.target.result
       const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0)
+      const existingTitles = new Set(games.map(g => g.title.toLowerCase()))
 
       for (let i = 0; i < lines.length; i++) {
-        const title = lines[i]
+        const line = lines[i]
+        const parts = line.split(',').map(p => p.trim())
+        const title = parts[0]
+        const explicitSize = parts.length > 1 ? Math.round(Number(parts[1])) : null
+        
+        if (existingTitles.has(title.toLowerCase())) continue
+
         setImportProgress(`Extracting: ${title} (${i + 1}/${lines.length})`)
         
         try {
-          const searchRes = await fetch(`https://api.rawg.io/api/games?search=${encodeURIComponent(title)}&key=${RAWG_API_KEY}&page_size=1`)
-          const searchData = await searchRes.json()
+          const target = await fetchGameData(title)
+          if (target) {
+            if (existingTitles.has(target.title.toLowerCase())) continue
 
-          if (searchData.results && searchData.results.length > 0) {
-            const target = searchData.results[0]
-            const detailRes = await fetch(`https://api.rawg.io/api/games/${target.id}?key=${RAWG_API_KEY}`)
-            const detailData = await detailRes.json()
-            
-            const screens = target.short_screenshots 
-              ? target.short_screenshots.map(s => s.image).filter(img => img !== target.background_image).slice(0, 3) 
-              : []
+            const finalSize = explicitSize !== null ? explicitSize : (target.detectedSize ? Number(target.detectedSize) : 0)
 
             const payload = {
-              title: target.name,
+              title: target.title,
               category: 'PC',
-              size: 0,
-              image: target.background_image || '',
+              size: finalSize,
+              image: target.image,
               video: '',
-              screenshots: screens,
-              description: detailData.description_raw || '',
-              minSpecs: '',
+              screenshots: target.screenshots,
+              description: target.description,
+              minSpecs: target.minSpecs,
               setupGuide: '',
               isTrending: false,
               createdAt: new Date().toISOString()
             }
 
             await set(push(ref(db, 'games')), payload)
+            existingTitles.add(target.title.toLowerCase())
           }
         } catch (error) {}
         
@@ -234,6 +291,18 @@ export default function AdminSettings() {
       e.target.value = null
     }
     reader.readAsText(file)
+  }
+
+  const handleDeleteAll = async () => {
+    if (window.confirm('WARNING: Are you sure you want to delete ALL games from the database? This action cannot be undone.')) {
+      try {
+        await remove(ref(db, 'games'))
+        setGames([])
+        handleCancelEdit()
+      } catch (error) {
+        alert('Failed to delete database records.')
+      }
+    }
   }
 
   const handleEdit = (g) => {
@@ -368,7 +437,7 @@ export default function AdminSettings() {
         {activeView === 'games' && (
           <>
             <div className="w-full xl:w-1/2 p-6 md:p-8 border-b xl:border-b-0 xl:border-r border-[#222] bg-[#050505] overflow-y-auto">
-              <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center justify-between mb-8 gap-4 flex-wrap">
                 <div className="flex items-center gap-3">
                   <Settings size={20} className="text-[#FFD600]" />
                   <h3 className="text-xl font-display font-bold text-white uppercase tracking-wider">{editingId ? 'Edit Asset' : 'Add New Asset'}</h3>
@@ -377,7 +446,10 @@ export default function AdminSettings() {
                 <div className="flex items-center gap-2">
                   <button onClick={() => fileInputRef.current.click()} disabled={isBulkImporting} className="bg-[#111] border border-[#333] hover:border-[#FFD600] text-white px-3 py-1.5 text-[9px] font-bold uppercase tracking-widest rounded-sm flex items-center gap-1.5 transition-colors">
                     {isBulkImporting ? <Loader2 size={12} className="animate-spin text-[#FFD600]" /> : <Upload size={12} className="text-[#FFD600]" />}
-                    {isBulkImporting ? importProgress : 'Bulk Import (CSV/TXT)'}
+                    {isBulkImporting ? importProgress : 'Bulk Import'}
+                  </button>
+                  <button onClick={handleDeleteAll} disabled={isBulkImporting || games.length === 0} className="bg-[#111] border border-[#333] hover:border-red-500 text-neutral-400 hover:text-white px-3 py-1.5 text-[9px] font-bold uppercase tracking-widest rounded-sm flex items-center gap-1.5 transition-colors disabled:opacity-50">
+                    <Trash2 size={12} className="text-red-500" /> Delete All
                   </button>
                   <input type="file" accept=".csv, .txt" ref={fileInputRef} onChange={handleBulkImport} className="hidden" />
                 </div>
@@ -407,7 +479,7 @@ export default function AdminSettings() {
                   </div>
                   <div className="flex flex-col gap-2">
                     <label className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Size (GB)</label>
-                    <input type="number" step="0.1" value={form.size} onChange={e=>setForm({...form, size: e.target.value})} className="w-full bg-[#111] border border-[#333] focus:border-[#FFD600] p-2.5 text-xs font-bold text-white focus:outline-none rounded-sm" required/>
+                    <input type="number" step="1" value={form.size} onChange={e=>setForm({...form, size: e.target.value})} className="w-full bg-[#111] border border-[#333] focus:border-[#FFD600] p-2.5 text-xs font-bold text-white focus:outline-none rounded-sm" required/>
                   </div>
                 </div>
 
